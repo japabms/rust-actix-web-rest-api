@@ -1,0 +1,18 @@
+[package]
+name = "cesc-api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-multipart = "0.6.0"
+actix-web = "4.3.1"
+bytes = "1.4.0"
+chrono = { version = "0.4.24", features = ["serde"] }
+diesel = { version = "2.0.4", features = ["serde_json", "postgres", "r2d2", "chrono"] }
+dotenv = "0.15.0"
+futures-util = "0.3.28"
+mime = "0.3.17"
+serde = { version = "1.0.163", features = ["derive"] }
+serde_json = "1.0.96"
