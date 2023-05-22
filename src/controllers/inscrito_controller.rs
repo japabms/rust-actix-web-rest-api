@@ -9,7 +9,7 @@ use crate::{
     db::{Pool, establish_connection}
 };
 
-#[get("/inscrito")]
+#[get("/inscritos")]
 async fn get_inscritos() ->  impl Responder {
     let pool = establish_connection();
 

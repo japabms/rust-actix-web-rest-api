@@ -28,6 +28,15 @@ pub struct NoticiaDTO {
     pub imagem: Vec<u8>,
 }
 
+#[derive(Queryable, Selectable, Serialize, Deserialize)]
+#[diesel(table_name = noticias)]
+pub struct NoticiaDtoMinimal {
+    pub titulo: String,
+    pub conteudo: String,
+    pub autor: String,
+    pub data: NaiveDateTime,
+}
+
 impl Noticia {
     pub fn insert(new_noticia: NoticiaDTO, pool: Pool) -> i32 {
         diesel::insert_into(noticias)
@@ -37,8 +46,8 @@ impl Noticia {
             .expect("Erro ao inserir nova noticia")
     }
 
-    pub fn find_all(pool: Pool) -> QueryResult<Vec<Noticia>>  {
-       noticias.load::<Noticia>(&mut pool.get().unwrap())
+    pub fn find_all(pool: Pool) -> QueryResult<Vec<NoticiaDtoMinimal>>  {
+       noticias.select(NoticiaDtoMinimal::as_select()).load(&mut pool.get().unwrap())
     }
 
     pub fn find_noticia_image(i: i32, pool: Pool) -> QueryResult<Vec<u8>> {
