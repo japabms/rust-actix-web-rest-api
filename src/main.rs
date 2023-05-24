@@ -4,7 +4,12 @@ pub mod models;
 pub mod schema;
 pub mod db;
 
-use controllers::{inscrito_controller::{get_inscritos, get_inscrito_by_id, get_inscrito_cursos, post_inscrito}, curso_controller::{get_cursos, post_curso}, noticia_controller::{post_noticia, get_noticias, get_noticia_image}};
+use controllers::{
+    curso_controller::*,
+    inscrito_controller::*,
+    noticia_controller::*,
+};
+
 use actix_web::{HttpServer, App};
 
 
@@ -44,8 +49,13 @@ async fn main() -> std::io::Result<()>  {
             //#[get("/noticia/{id}/imagem")]
             .service(get_noticia_image)
 
-    }).bind(("192.168.1.13", 8080))?
-        .server_hostname("192.168.1.13")
+            //#[put("/noticia")]
+            .service(put_noticia)
+
+            //#[put("/noticia/{id}/imagem")]
+            .service(put_noticia_imagem)
+
+    }).bind(("0.0.0.0", 8080))? //0.0.0.0 binda o server em todas as interfaces de rede disponiveis
         .run()
         .await
 }

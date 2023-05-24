@@ -4,7 +4,7 @@ use actix_web::Error;
 use actix_web::HttpRequest;
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
-use actix_web::{get, post, Responder, web, http::StatusCode, HttpResponse, ResponseError};
+use actix_web::{get, post, put, Responder, web, http::StatusCode, HttpResponse, ResponseError};
 use bytes::Bytes;
 
 
@@ -66,6 +66,46 @@ async fn post_noticia(mut payload: Multipart, req: HttpRequest) -> Result<HttpRe
     Noticia::insert(noticia, pool);
 
     Ok(HttpResponse::Ok().finish())
+}
+
+#[put("/noticia/{id}")]
+async fn put_noticia(id: web::Path<i32>, json: web::Json<NoticiaDtoMinimal>) -> impl Responder{
+    let pool = establish_connection();
+
+    match Noticia::update(id.into_inner(), json.into_inner(), pool) {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
+}
+
+#[put("/noticia/{id}/imagem")]
+async fn put_noticia_imagem(id: web::Path<i32>, mut payload: Multipart) ->  Result<HttpResponse, Error> {
+    let pool = establish_connection();
+    let mut imagem: Vec<u8> = Vec::new();
+
+    loop {
+        if let Ok(Some(mut field)) = payload.try_next().await {
+            let content_disposition = field.content_disposition();
+            if let Some(nome) = content_disposition.get_name() {
+                match nome {
+                    "imagem" => {
+                        while let Some(chunk) = field.next().await {
+                            let data = chunk?;
+                            imagem.write_all(&data)?;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        } else {
+            break;
+        }
+    }
+
+    match Noticia::update_imagem(id.into_inner(), imagem, pool) {
+        Ok(_) => Ok(HttpResponse::Ok().finish()),
+        Err(_) => panic!("teste"),
+    }
 }
 
 

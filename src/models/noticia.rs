@@ -19,7 +19,7 @@ pub struct Noticia {
 }
 
 
-#[derive(Default, Insertable, Serialize, Deserialize)]
+#[derive(Default, AsChangeset, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = noticias)]
 pub struct NoticiaDTO {
     pub titulo: String,
@@ -28,7 +28,7 @@ pub struct NoticiaDTO {
     pub imagem: Vec<u8>,
 }
 
-#[derive(Queryable, Selectable, Serialize, Deserialize)]
+#[derive(Queryable, AsChangeset, Selectable, Serialize, Deserialize)]
 #[diesel(table_name = noticias)]
 pub struct NoticiaDtoMinimal {
     pub titulo: String,
@@ -44,6 +44,20 @@ impl Noticia {
             .returning(noticias::id)
             .get_result::<i32>(&mut pool.get().unwrap())
             .expect("Erro ao inserir nova noticia")
+    }
+
+    pub fn update(i: i32, updated_noticia: NoticiaDtoMinimal, pool: Pool) -> QueryResult<usize> {
+        diesel::update(noticias)
+            .filter(noticias::id.eq(i))
+            .set(&updated_noticia)
+            .execute(&mut pool.get().unwrap())
+    }
+    
+    pub fn update_imagem(i: i32, new_imagem: Vec<u8>, pool: Pool) -> QueryResult<usize> {
+        diesel::update(noticias)
+            .filter(noticias::id.eq(i))
+            .set(noticias::imagem.eq(new_imagem))
+            .execute(&mut pool.get().unwrap())
     }
 
     pub fn find_all(pool: Pool) -> QueryResult<Vec<NoticiaDtoMinimal>>  {
