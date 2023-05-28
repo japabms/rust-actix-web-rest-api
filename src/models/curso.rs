@@ -27,7 +27,6 @@ impl Curso {
        curso.load::<Curso>(&mut pool.get().unwrap()) 
     }
 
-
     pub fn find_by_id(i: i32, pool: Pool) -> QueryResult<Curso> {
         curso.find(i).get_result::<Curso>(&mut pool.get().unwrap())
     }

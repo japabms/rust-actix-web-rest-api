@@ -5,7 +5,6 @@ use actix_web::HttpRequest;
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use actix_web::{get, post, put, Responder, web, http::StatusCode, HttpResponse, ResponseError};
-use bytes::Bytes;
 
 
 use crate::{
@@ -19,8 +18,7 @@ async fn post_noticia(mut payload: Multipart, req: HttpRequest) -> Result<HttpRe
     let mut noticia = NoticiaDTO::default(); 
     let pool = establish_connection(); 
 
-    loop {
-        if let Ok(Some(mut field)) = payload.try_next().await {
+        while let Ok(Some(mut field)) = payload.try_next().await {
             let content_disposition = field.content_disposition();
 
             if let Some(nome) = content_disposition.get_name() {
@@ -58,11 +56,7 @@ async fn post_noticia(mut payload: Multipart, req: HttpRequest) -> Result<HttpRe
                     _ => {}
                 }
             }
-        }else {
-            break;
         }
-    }
-
     Noticia::insert(noticia, pool);
 
     Ok(HttpResponse::Ok().finish())
@@ -83,24 +77,19 @@ async fn put_noticia_imagem(id: web::Path<i32>, mut payload: Multipart) ->  Resu
     let pool = establish_connection();
     let mut imagem: Vec<u8> = Vec::new();
 
-    loop {
-        if let Ok(Some(mut field)) = payload.try_next().await {
+        while let Ok(Some(mut field)) = payload.try_next().await {
             let content_disposition = field.content_disposition();
             if let Some(nome) = content_disposition.get_name() {
-                match nome {
-                    "imagem" => {
-                        while let Some(chunk) = field.next().await {
-                            let data = chunk?;
-                            imagem.write_all(&data)?;
-                        }
+                if nome.eq("imagem") {
+                    while let Some(chunk) = field.next().await {
+                        let data = chunk?;
+                        imagem.write_all(&data)?;
                     }
-                    _ => {}
+                }else {
+                    panic!("F")
                 }
             }
-        } else {
-            break;
-        }
-    }
+        } 
 
     match Noticia::update_imagem(id.into_inner(), imagem, pool) {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
@@ -113,7 +102,9 @@ async fn put_noticia_imagem(id: web::Path<i32>, mut payload: Multipart) ->  Resu
 async fn get_noticias() -> impl Responder{
     let pool = establish_connection();
 
-    match Noticia::find_all(pool) {
+    let noticias = Noticia::find_all(pool);
+
+    match noticias {
         Ok(noticias) => HttpResponse::Ok().json(noticias),
         Err(_) => HttpResponse::NotFound().finish(),
     }
@@ -123,7 +114,7 @@ async fn get_noticias() -> impl Responder{
 async fn get_noticia_image(id: web::Path<i32>) -> impl Responder {
     let pool = establish_connection();
 
-    let imagem = Noticia::find_noticia_image(id.into_inner(), pool).unwrap();
+    let imagem = Noticia::find_image(id.into_inner(), pool).unwrap();
 
     HttpResponse::Ok().content_type("image/png").body(imagem)
 }

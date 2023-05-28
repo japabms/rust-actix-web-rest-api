@@ -48,19 +48,8 @@ async fn get_inscrito_cursos(id: web::Path<i32>) -> impl Responder {
 #[post("/inscrever")]
 async fn post_inscrito(json: web::Json<InscritoWithCursosDTO>) -> impl Responder {
     let pool = establish_connection();
-    
-    let inscrito = InscritoWithCursosDTO {
-        nome: json.nome.clone(),
-        nome_cracha: json.nome_cracha.clone(),
-        email: json.email.clone(),
-        cpf: json.cpf.clone(),
-        modalidade_nome: json.modalidade_nome.clone(),
-        modalidade_preco: json.modalidade_preco,
-        instituicao: json.instituicao.clone(),
-        cursos: json.cursos.clone(),
-    };
 
-    let id = Inscrito::insert(inscrito, &pool);
+    let id = Inscrito::insert(json.into_inner(), &pool);
 
     HttpResponse::Ok().message_body(format!("Inscrito ID: {}", id))
-}
+}  

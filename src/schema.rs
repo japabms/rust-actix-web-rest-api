@@ -9,6 +9,19 @@ diesel::table! {
 }
 
 diesel::table! {
+    eventos (id) {
+        id -> Int4,
+        titulo -> Varchar,
+        sobre -> Varchar,
+        data_inicio -> Date,
+        data_fim -> Date,
+        tipo -> Varchar,
+        email -> Varchar,
+        icone -> Bytea,
+    }
+}
+
+diesel::table! {
     inscrito (id) {
         id -> Int4,
         nome -> Varchar,
@@ -44,6 +57,7 @@ diesel::joinable!(inscrito_cursos -> inscrito (inscrito_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     curso,
+    eventos,
     inscrito,
     inscrito_cursos,
     noticias,

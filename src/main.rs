@@ -7,7 +7,8 @@ pub mod db;
 use controllers::{
     curso_controller::*,
     inscrito_controller::*,
-    noticia_controller::*,
+    noticia_controller::*, 
+    evento_controller::*,
 };
 
 use actix_web::{HttpServer, App};
@@ -33,7 +34,7 @@ async fn main() -> std::io::Result<()>  {
 
             //#[post("/inscrever")]
             .service(post_inscrito)
-            
+
             //#[get("/cursos")]
             .service(get_cursos)
 
@@ -42,7 +43,7 @@ async fn main() -> std::io::Result<()>  {
 
             //#[post("/noticia")]
             .service(post_noticia)
-
+            
             //#[get("/noticias")]
             .service(get_noticias)
 
@@ -54,6 +55,18 @@ async fn main() -> std::io::Result<()>  {
 
             //#[put("/noticia/{id}/imagem")]
             .service(put_noticia_imagem)
+
+            //#[get("/evento/{id}")]
+            .service(get_evento_by_id)
+
+            //#[post("/evento")]
+            .service(post_evento)
+
+            //#[put("/evento/{id}")]
+            .service(put_evento)
+
+            //#[get("/evento/{id}/icone")]
+            .service(get_evento_icone)
 
     }).bind(("0.0.0.0", 8080))? //0.0.0.0 binda o server em todas as interfaces de rede disponiveis
         .run()

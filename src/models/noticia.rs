@@ -1,5 +1,4 @@
-use crate::{
-    schema::noticias::{self, dsl::*},
+use crate::{ schema::noticias::{self, dsl::*},
     db::Pool
 };
 
@@ -38,6 +37,22 @@ pub struct NoticiaDtoMinimal {
 }
 
 impl Noticia {
+    pub fn find_all(pool: Pool) -> QueryResult<Vec<NoticiaDtoMinimal>>  {
+       noticias.select(NoticiaDtoMinimal::as_select())
+            .load(&mut pool.get().unwrap())
+    }
+
+    pub fn find_by_id(i: i32, pool: Pool) -> QueryResult<NoticiaDtoMinimal> {
+        noticias.filter(noticias::id.eq(i))
+            .select(NoticiaDtoMinimal::as_select())
+            .get_result(&mut pool.get().unwrap())
+    }
+
+    pub fn find_image(i: i32, pool: Pool) -> QueryResult<Vec<u8>> {
+        noticias.filter(noticias::id.eq(i))
+            .select(noticias::imagem)
+            .get_result(&mut pool.get().unwrap())
+    }
     pub fn insert(new_noticia: NoticiaDTO, pool: Pool) -> i32 {
         diesel::insert_into(noticias)
             .values(&new_noticia)
@@ -58,15 +73,5 @@ impl Noticia {
             .filter(noticias::id.eq(i))
             .set(noticias::imagem.eq(new_imagem))
             .execute(&mut pool.get().unwrap())
-    }
-
-    pub fn find_all(pool: Pool) -> QueryResult<Vec<NoticiaDtoMinimal>>  {
-       noticias.select(NoticiaDtoMinimal::as_select()).load(&mut pool.get().unwrap())
-    }
-
-    pub fn find_noticia_image(i: i32, pool: Pool) -> QueryResult<Vec<u8>> {
-        noticias.filter(noticias::id.eq(i))
-            .select(noticias::imagem)
-            .get_result(&mut pool.get().unwrap())
     }
 }

@@ -83,9 +83,7 @@ impl Inscrito {
             }).collect::<Vec<InscritoCurso>>();
 
             InscritoCurso::insert(c, pool).expect("Erro ao inserir os cursos");
-        }else {
-            println!("Nenhum curso adicionado :p")
-        }        
+        }       
 
         //retornando o ID do inscrito inserido
         inserted_inscrito_id

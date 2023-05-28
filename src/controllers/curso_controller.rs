@@ -25,12 +25,7 @@ async fn get_cursos() -> impl Responder {
 async fn post_curso(json: web::Json<CursoDTO>) -> impl Responder {
     let pool = establish_connection();
 
-    let curso = CursoDTO {
-        nome: json.nome.clone(),
-        preco: json.preco,
-    };
-
-    let id = Curso::insert(curso, pool);
+    let id = Curso::insert(json.into_inner(), pool);
 
     HttpResponse::Ok().message_body(format!("Curso ID: {}", id ))
 }
@@ -39,12 +34,9 @@ async fn post_curso(json: web::Json<CursoDTO>) -> impl Responder {
 async fn put_curso(id: web::Path<i32>, updated_curso: web::Json<CursoDTO>) -> impl Responder {
     let pool = establish_connection();
 
-    let curso = CursoDTO {
-        nome: updated_curso.nome.clone(),
-        preco: updated_curso.preco,
-    };
+    let curso =  Curso::update(id.into_inner(), updated_curso.into_inner() , pool);
 
-    match Curso::update(id.into_inner(), curso , pool) {
+    match curso{
         Ok(curso) => HttpResponse::Ok().finish(),
         Err(_) => HttpResponse::BadRequest().finish(),
     }
