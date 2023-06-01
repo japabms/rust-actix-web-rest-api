@@ -1,10 +1,10 @@
 use crate::{
     schema::inscrito::{self, dsl::*},
     models::inscrito_cursos::InscritoCurso,
-    db::Pool,
 };
 use serde::{Serialize, Deserialize};
 use diesel::prelude::*;
+use diesel::PgConnection;
 
 #[derive(Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = inscrito)]
@@ -46,15 +46,15 @@ pub struct InscritoWithCursosDTO {
 
 
 impl Inscrito {
-    pub fn find_all(pool: &Pool) -> QueryResult<Vec<Inscrito>> {
-       inscrito.load::<Inscrito>(&mut pool.get().unwrap()) 
+    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Inscrito>> {
+       inscrito.load::<Inscrito>(&mut conn) 
     }
     
-    pub fn find_by_id(i: i32, pool: &Pool) -> QueryResult<Inscrito> {
-        inscrito.find(i).get_result::<Inscrito>(&mut pool.get().unwrap())
+    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Inscrito> {
+        inscrito.find(i).get_result::<Inscrito>(&mut conn)
     }
 
-    pub fn insert(new_inscrito: InscritoWithCursosDTO, pool: &Pool) -> i32 {
+    pub fn insert(new_inscrito: InscritoWithCursosDTO, mut conn: PgConnection) -> i32 {
 
         //Inscrito a ser inserido
         let insert_inscrito = InscritoDTO { 
@@ -72,7 +72,7 @@ impl Inscrito {
         let inserted_inscrito_id: i32 = diesel::insert_into(inscrito::table)
             .values(&insert_inscrito)
             .returning(inscrito::id)
-            .get_result::<i32>(&mut pool.get().unwrap())
+            .get_result::<i32>(&mut conn)
             .expect("Erro ao realizar a inscrição");
         
         //Verificando se existe algum curso, e registrando no BD
@@ -82,16 +82,16 @@ impl Inscrito {
                 curso_id: c_id,
             }).collect::<Vec<InscritoCurso>>();
 
-            InscritoCurso::insert(c, pool).expect("Erro ao inserir os cursos");
+            InscritoCurso::insert(c, conn).expect("Erro ao inserir os cursos");
         }       
 
         //retornando o ID do inscrito inserido
         inserted_inscrito_id
     }
     
-    pub fn delete(i: i32, pool: &Pool) -> QueryResult<usize> {
+    pub fn delete(i: i32,mut conn: PgConnection) -> QueryResult<usize> {
         diesel::delete(inscrito.find(i))
-            .execute(&mut pool.get().unwrap())
+            .execute(&mut conn)
     }
 
 }

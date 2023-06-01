@@ -1,10 +1,7 @@
-use crate::{
-    schema::curso::{self, dsl::*},
-    db::Pool,
-};
+use crate::schema::curso::{self, dsl::*};
 
-use serde::{Serialize, Deserialize};
 use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = curso)]
@@ -18,36 +15,35 @@ pub struct Curso {
 #[derive(Insertable, AsChangeset, Serialize, Deserialize, Clone)]
 #[diesel(table_name = curso)]
 pub struct CursoDTO {
-    pub nome: String, 
+    pub nome: String,
     pub preco: i32,
 }
 
 impl Curso {
-    pub fn find_all(pool: Pool) -> QueryResult<Vec<Curso>> {
-       curso.load::<Curso>(&mut pool.get().unwrap()) 
+    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Curso>> {
+        curso.load::<Curso>(&mut conn)
     }
 
-    pub fn find_by_id(i: i32, pool: Pool) -> QueryResult<Curso> {
-        curso.find(i).get_result::<Curso>(&mut pool.get().unwrap())
+    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Curso> {
+        curso.find(i).get_result::<Curso>(&mut conn)
     }
 
-    pub fn insert(new_curso: CursoDTO, pool: Pool) -> i32 {
+    pub fn insert(new_curso: CursoDTO, mut conn: PgConnection) -> i32 {
         diesel::insert_into(curso)
             .values(&new_curso)
             .returning(curso::id)
-            .get_result::<i32>(&mut pool.get().unwrap())
+            .get_result::<i32>(&mut conn)
             .expect("Erro ao registrar novo curso")
     }
 
-    pub fn update(i: i32, edited_curso: CursoDTO, pool: Pool) -> QueryResult<usize> {
+    pub fn update(i: i32, edited_curso: CursoDTO, mut conn: PgConnection) -> QueryResult<usize> {
         diesel::update(curso::table)
             .filter(curso::id.eq(i))
             .set(&edited_curso)
-            .execute(&mut pool.get().unwrap())
+            .execute(&mut conn)
     }
-    
-    pub fn delete(i: i32, pool: Pool) -> QueryResult<usize> {
-        diesel::delete(curso.find(i))
-            .execute(&mut pool.get().unwrap())
+
+    pub fn delete(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
+        diesel::delete(curso.find(i)).execute(&mut conn)
     }
 }

@@ -6,14 +6,14 @@ use crate::{
         inscrito::*,
         inscrito_cursos::*
     },
-    db::{Pool, establish_connection}
+    db::establish_connection
 };
 
-#[get("/inscritos")]
+#[get("/inscrito")]
 async fn get_inscritos() ->  impl Responder {
-    let pool = establish_connection();
+    let conn = establish_connection();
 
-    let inscritos = Inscrito::find_all(&pool);
+    let inscritos = Inscrito::find_all(conn);
 
     match inscritos {
         Ok(inscrito) => HttpResponse::Ok().json(inscrito),
@@ -23,9 +23,9 @@ async fn get_inscritos() ->  impl Responder {
 
 #[get("/inscrito/{id}")]
 async fn get_inscrito_by_id(id: web::Path<i32>) -> impl Responder {
-    let pool = establish_connection();
+    let conn = establish_connection();
 
-    let inscrito = Inscrito::find_by_id(id.into_inner(), &pool);
+    let inscrito = Inscrito::find_by_id(id.into_inner(), conn);
     
     match inscrito {
         Ok(inscrito) => HttpResponse::Ok().json(inscrito),
@@ -35,9 +35,9 @@ async fn get_inscrito_by_id(id: web::Path<i32>) -> impl Responder {
 
 #[get("/inscrito/{id}/cursos")]
 async fn get_inscrito_cursos(id: web::Path<i32>) -> impl Responder {
-    let pool = establish_connection();
+    let conn = establish_connection();
 
-    let cursos = InscritoCurso::find_inscrito_cursos(id.into_inner(), &pool);
+    let cursos = InscritoCurso::find_inscrito_cursos(id.into_inner(), conn);
 
     match cursos {
         Ok(cursos) => HttpResponse::Ok().json(cursos),
@@ -47,9 +47,9 @@ async fn get_inscrito_cursos(id: web::Path<i32>) -> impl Responder {
 
 #[post("/inscrever")]
 async fn post_inscrito(json: web::Json<InscritoWithCursosDTO>) -> impl Responder {
-    let pool = establish_connection();
+    let conn = establish_connection();
 
-    let id = Inscrito::insert(json.into_inner(), &pool);
+    let id = Inscrito::insert(json.into_inner(), conn);
 
     HttpResponse::Ok().message_body(format!("Inscrito ID: {}", id))
 }  

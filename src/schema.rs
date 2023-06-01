@@ -1,6 +1,17 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    atividades (id) {
+        id -> Int4,
+        titulo -> Varchar,
+        descricao -> Varchar,
+        responsavel -> Varchar,
+        inicio -> Timestamp,
+        fim -> Timestamp,
+    }
+}
+
+diesel::table! {
     curso (id) {
         id -> Int4,
         nome -> Varchar,
@@ -56,6 +67,7 @@ diesel::joinable!(inscrito_cursos -> curso (curso_id));
 diesel::joinable!(inscrito_cursos -> inscrito (inscrito_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    atividades,
     curso,
     eventos,
     inscrito,

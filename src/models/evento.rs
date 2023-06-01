@@ -1,7 +1,5 @@
-use crate::{
-    schema::eventos::{self, dsl::*},
-    db::Pool
-};
+use crate::schema::eventos::{self, dsl::*};
+use diesel::PgConnection;
 
 use chrono::NaiveDate;
 use diesel::prelude::*;
@@ -22,7 +20,7 @@ pub struct Evento {
 
 #[derive(Default, AsChangeset, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = eventos)]
-pub struct EventoDTO {
+pub struct NewEvento {
     pub titulo: String,
     pub sobre: String,
     pub data_inicio: NaiveDate,
@@ -43,35 +41,45 @@ pub struct EventoDtoMinimal {
     pub email: String,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct EventoDtoDataFormatada {
+    pub id: i32,
+    pub titulo: String,
+    pub sobre: String,
+    pub data_inicio: String,
+    pub data_fim: String,
+    pub tipo: String,
+    pub email: String,
+}
+
 impl Evento {
-    pub fn find_all(pool: Pool) -> QueryResult<Vec<EventoDtoMinimal>>{
-        eventos.select(EventoDtoMinimal::as_select())
-            .load(&mut pool.get().unwrap())
+    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Evento>>{
+        eventos
+            .load(&mut conn)
     }
 
-    pub fn find_by_id(i: i32, pool: Pool) -> QueryResult<EventoDtoMinimal> {
+    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Evento> {
         eventos.filter(eventos::id.eq(i))
-            .select(EventoDtoMinimal::as_select())
-            .get_result(&mut pool.get().unwrap())
+            .get_result(&mut conn)
     }
 
-    pub fn find_icone(i: i32, pool: Pool) -> QueryResult<Vec<u8>> {
+    pub fn find_icone(i: i32, mut conn: PgConnection) -> QueryResult<Vec<u8>> {
         eventos.filter(eventos::id.eq(i))
             .select(eventos::icone)
-            .get_result::<Vec<u8>>(&mut pool.get().unwrap())
+            .get_result::<Vec<u8>>(&mut conn)
     }
  
-    pub fn insert(new_evento: EventoDTO, pool: Pool) -> QueryResult<i32> {
+    pub fn insert(new_evento: NewEvento, mut conn: PgConnection) -> QueryResult<i32> {
         diesel::insert_into(eventos)
             .values(&new_evento)
             .returning(eventos::id)
-            .get_result::<i32>(&mut pool.get().unwrap())
+            .get_result::<i32>(&mut conn)
     }
 
-    pub fn update(i: i32, evento: EventoDtoMinimal, pool: Pool) -> QueryResult<usize> {
+    pub fn update(i: i32, evento: EventoDtoMinimal, mut conn: PgConnection) -> QueryResult<usize> {
         diesel::update(eventos)
             .filter(eventos::id.eq(i))
             .set(&evento)
-            .execute(&mut pool.get().unwrap())
+            .execute(&mut conn)
     }
 }

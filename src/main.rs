@@ -8,7 +8,7 @@ use controllers::{
     curso_controller::*,
     inscrito_controller::*,
     noticia_controller::*, 
-    evento_controller::*,
+    evento_controller::*, atividade_controller::{get_atividades, put_atividade, post_atividade, get_atividade_by_id},
 };
 
 use actix_web::{HttpServer, App};
@@ -18,8 +18,10 @@ use actix_web::{HttpServer, App};
 // adicionar web::Data<Pool> ao App para evitar abrir uma conexão com o banco a cada chamada
 // Criar put para todos as entradas, mudar a imagem para opcional
 
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()>  {
+
 
     HttpServer::new(||{
         App::new()
@@ -53,8 +55,8 @@ async fn main() -> std::io::Result<()>  {
             //#[put("/noticia")]
             .service(put_noticia)
 
-            //#[put("/noticia/{id}/imagem")]
-            .service(put_noticia_imagem)
+            //#[get("noticia/recentes")]
+            .service(get_noticias_recentes)
 
             //#[get("/evento/{id}")]
             .service(get_evento_by_id)
@@ -64,9 +66,24 @@ async fn main() -> std::io::Result<()>  {
 
             //#[put("/evento/{id}")]
             .service(put_evento)
+            
+            //#[get("/eventos")]
+            .service(get_eventos)
 
             //#[get("/evento/{id}/icone")]
             .service(get_evento_icone)
+
+            //#[get("/atividades")]
+            .service(get_atividades)
+
+            //#[get("/atividade/{id}")]
+            .service(get_atividade_by_id)
+
+            //#[put("/atividade/{id}")]
+            .service(put_atividade)
+
+            //#[post("/atividade")]
+            .service(post_atividade)
 
     }).bind(("0.0.0.0", 8080))? //0.0.0.0 binda o server em todas as interfaces de rede disponiveis
         .run()
