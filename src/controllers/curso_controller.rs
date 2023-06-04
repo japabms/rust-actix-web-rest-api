@@ -1,8 +1,8 @@
-use actix_web::{delete, get, http::StatusCode, post, put, web, HttpResponse, Responder};
+use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 
 use crate::{
     db::establish_connection,
-    models::{curso::*, inscrito::*, inscrito_cursos::*},
+    models::curso::*, 
 };
 
 #[get("/curso")]
@@ -45,7 +45,7 @@ async fn put_curso(id: web::Path<i32>, updated_curso: web::Json<CursoDTO>) -> im
     let curso = Curso::update(id.into_inner(), updated_curso.into_inner(), conn);
 
     match curso {
-        Ok(curso) => HttpResponse::Ok().finish(),
+        Ok(curso) => HttpResponse::Ok().body(format!("Número de colunas atualizada: {}", curso)),
         Err(_) => HttpResponse::BadRequest().finish(),
     }
 }
@@ -57,7 +57,7 @@ async fn delete_curso(id: web::Path<i32>) -> impl Responder {
     let curso = Curso::delete(id.into_inner(), conn);
 
     match curso {
-        Ok(curso) => HttpResponse::Ok().finish(),
+        Ok(curso) => HttpResponse::Ok().body(format!("Número de colunas atualizada: {}", curso)),
         Err(_) => HttpResponse::BadRequest().finish(),
     }
 }

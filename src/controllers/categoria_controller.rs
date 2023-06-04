@@ -1,5 +1,5 @@
 use actix_web::{
-    delete, get, http::StatusCode, post, put, web, HttpResponse, Responder, ResponseError,
+    delete, get,  post, web, HttpResponse, Responder, 
 };
 
 use crate::{db::establish_connection, models::categoria::*};

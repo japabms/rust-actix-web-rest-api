@@ -1,19 +1,16 @@
 use actix_multipart::Multipart;
 use actix_web::error::ErrorBadRequest;
 use actix_web::Error;
-use actix_web::HttpRequest;
-use actix_web::{get, http::StatusCode, post, put, web, HttpResponse, Responder, ResponseError};
+use actix_web::{get, post, put, web, HttpResponse, Responder};
 use chrono::NaiveDate;
-use diesel::PgConnection;
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use std::io::Write;
-use std::str::FromStr;
 
 use crate::{db::establish_connection, models::evento::*};
 
 #[post("/evento")]
-async fn post_evento(mut payload: Multipart, req: HttpRequest) -> Result<HttpResponse, Error> {
+async fn post_evento(mut payload: Multipart) -> Result<HttpResponse, Error> {
     let mut evento = NewEvento::default();
     let conn = establish_connection();
 

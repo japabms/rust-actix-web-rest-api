@@ -1,8 +1,7 @@
-use actix_web::{get, post, Responder, web, http::StatusCode, HttpResponse};
+use actix_web::{get, post, Responder, web, HttpResponse};
 
 use crate::{
     models::{
-        curso::*,
         inscrito::*,
         inscrito_cursos::*
     },

@@ -1,4 +1,5 @@
 #[allow(unused_imports, unused_variables)]
+pub mod services;
 pub mod controllers;
 pub mod db;
 pub mod models;

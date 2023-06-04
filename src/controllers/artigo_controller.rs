@@ -2,14 +2,12 @@ use actix_multipart::Multipart;
 use actix_web::error::ErrorBadRequest;
 use actix_web::web::Bytes;
 use actix_web::Error;
-use actix_web::{get, http::StatusCode, post, put, web, HttpResponse, Responder, ResponseError};
+use actix_web::{get, post, put, web, HttpResponse, Responder};
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use std::io::Write;
 
-use crate::{
-    db::establish_connection, models::artigo::*, models::artigo_categorias::*, models::categoria::*,
-};
+use crate::{db::establish_connection, models::artigo::*};
 
 #[post("/artigo")]
 async fn post_artigo(mut payload: Multipart) -> Result<HttpResponse, Error> {

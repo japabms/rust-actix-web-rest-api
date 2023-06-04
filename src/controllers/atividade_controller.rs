@@ -1,5 +1,5 @@
 use actix_web::{
-    delete, get, http::StatusCode, post, put, web, HttpResponse, Responder, ResponseError, error::ErrorBadRequest,
+    delete, get, post, put, web, HttpResponse, Responder, 
 };
 
 use crate::{db::establish_connection, models::atividade::*};
@@ -64,12 +64,10 @@ async fn post_atividade(json: web::Json<AtividadeDTO>) -> impl Responder {
 async fn put_atividade(id: web::Path<i32>, json: web::Json<AtividadeDTO>) -> impl Responder {
     let pool = establish_connection();
 
-    let atividade_atualizada = match Atividade::update(id.into_inner(), json.into_inner(), pool) {
-        Ok(num) => num,
-        Err(err) => return HttpResponse::BadRequest().body("A data deve estar no seguinte formato: yyyy-MM-dd"),
-    };
-
-    HttpResponse::NoContent().finish()
+    match Atividade::update(id.into_inner(), json.into_inner(), pool) {
+        Ok(num) => HttpResponse::Ok().body(format!("Numero de colunas atualizadas {}", num)), 
+        Err(_) => HttpResponse::BadRequest().body("A data deve estar no seguinte formato: yyyy-MM-dd"),
+    }
 }
 
 #[delete("/atividade/{id}")]
