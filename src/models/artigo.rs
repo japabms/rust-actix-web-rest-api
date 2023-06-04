@@ -1,10 +1,11 @@
 use crate::schema::artigos::{self, dsl::*};
+use utoipa::{ToSchema, IntoParams};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::models::artigo_categorias::ArtigoCategorias;
 
-#[derive(Queryable, Selectable, Identifiable, Serialize, Deserialize)]
+#[derive(ToSchema, Queryable, Selectable, Identifiable, Serialize, Deserialize)]
 pub struct Artigo {
     pub id: i32,
     pub titulo: String,
@@ -22,7 +23,7 @@ pub struct NewArtigo {
     pub documento: Vec<u8>,
 }
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Serialize, Deserialize, Default, IntoParams, ToSchema)]
 pub struct ArtigoComCategorias {
     pub titulo: String,
     pub resumo: String,

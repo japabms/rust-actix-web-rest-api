@@ -1,10 +1,11 @@
 use crate::schema::atividades::{self, dsl::*};
+use utoipa::ToSchema;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Identifiable, Selectable, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(ToSchema, Queryable, Identifiable, Selectable, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Atividade {
     pub id: i32,
     pub titulo: String,
@@ -14,7 +15,7 @@ pub struct Atividade {
     pub fim: NaiveDateTime,
 }
 
-#[derive(Queryable, Selectable, AsChangeset, Insertable, Serialize, Deserialize)]
+#[derive(ToSchema, Queryable, Selectable, AsChangeset, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = atividades)]
 pub struct AtividadeDTO {
     pub titulo: String,

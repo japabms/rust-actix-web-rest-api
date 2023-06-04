@@ -1,11 +1,12 @@
 use crate::schema::noticias::{self, dsl::*};
+use utoipa::ToSchema;
 
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
+#[derive(ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = noticias)]
 pub struct Noticia {
     pub id: i32,
@@ -16,7 +17,7 @@ pub struct Noticia {
     pub imagem: Vec<u8>,
 }
 
-#[derive(Default, AsChangeset, Insertable, Serialize, Deserialize)]
+#[derive(ToSchema, Default, AsChangeset, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = noticias)]
 pub struct NewNoticia {
     pub titulo: String,

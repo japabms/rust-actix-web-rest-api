@@ -57,7 +57,7 @@ pub async fn insert(mut payload: Multipart) -> Result<(), Error> {
                             ErrorBadRequest("Failed to parse field as UTF-8 string")
                         })?;
 
-                        for int in integer_str.split_whitespace() {
+                        for int in integer_str.split(',') {
                             if let Ok(integer) = int.parse::<i32>() {
                                 categorias.push(integer);
                             } else {

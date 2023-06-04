@@ -1,9 +1,10 @@
 use crate::schema::curso::{self, dsl::*};
+use utoipa::ToSchema;
 
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
+#[derive(ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = curso)]
 #[diesel(primary_key(id))]
 pub struct Curso {
@@ -12,7 +13,7 @@ pub struct Curso {
     pub preco: i32,
 }
 
-#[derive(Insertable, AsChangeset, Serialize, Deserialize, Clone)]
+#[derive(Insertable, AsChangeset, Serialize, Deserialize, Clone, ToSchema)]
 #[diesel(table_name = curso)]
 pub struct CursoDTO {
     pub nome: String,

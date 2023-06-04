@@ -1,3 +1,4 @@
+use utoipa::ToSchema;
 use crate::{
     schema::inscrito::{self, dsl::*},
     models::inscrito_cursos::InscritoCurso,
@@ -6,7 +7,7 @@ use serde::{Serialize, Deserialize};
 use diesel::prelude::*;
 use diesel::PgConnection;
 
-#[derive(Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
+#[derive(ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
 #[diesel(table_name = inscrito)]
 pub struct Inscrito {
     pub id: i32,
@@ -32,7 +33,7 @@ pub struct InscritoDTO {
     pub instituicao: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]                                               
+#[derive(ToSchema, Serialize, Deserialize, Clone)]                                               
 pub struct InscritoWithCursosDTO {
     pub nome: String,
     pub nome_cracha: String,

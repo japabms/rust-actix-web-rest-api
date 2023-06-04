@@ -1,0 +1,980 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "CESC-API",
+    "description": "",
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/artigo": {
+      "post": {
+        "tags": [
+          "Artigo"
+        ],
+        "operationId": "post_artigo",
+        "requestBody": {
+          "description": "Artigo to store the database",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtigoComCategorias"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Artigo postado com sucesso."
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/atividade": {
+      "get": {
+        "tags": [
+          "Atividade"
+        ],
+        "operationId": "get_atividades",
+        "responses": {}
+      },
+      "post": {
+        "tags": [
+          "Atividade"
+        ],
+        "operationId": "post_atividade",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtividadeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/atividade/{id}": {
+      "get": {
+        "tags": [
+          "Atividade"
+        ],
+        "operationId": "get_atividade_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "tags": [
+          "Atividade"
+        ],
+        "operationId": "put_atividade",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AtividadeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      },
+      "delete": {
+        "tags": [
+          "Atividade"
+        ],
+        "operationId": "delete_atividade",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/categoria": {
+      "get": {
+        "tags": [
+          "Categoria"
+        ],
+        "operationId": "get_categoria",
+        "responses": {
+          "200": {
+            "description": "Categorias pega com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Categoria"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categoria"
+        ],
+        "operationId": "post_categoria",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewCategoria"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Categoria inserida com sucesso."
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/categoria/{id}": {
+      "delete": {
+        "tags": [
+          "Categoria"
+        ],
+        "operationId": "delete_categoria",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria apagada com sucesso."
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/curso": {
+      "get": {
+        "tags": [
+          "Curso"
+        ],
+        "operationId": "get_cursos",
+        "responses": {
+          "200": {
+            "description": "Cursos pego com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Curso"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Curso"
+        ],
+        "operationId": "post_curso",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cursos pego com sucesso."
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/curso/{id}": {
+      "get": {
+        "tags": [
+          "Curso"
+        ],
+        "operationId": "get_curso_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cursos pego com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Curso"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Curso"
+        ],
+        "operationId": "put_curso",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Cursos pego com sucesso."
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Curso"
+        ],
+        "operationId": "delete_curso",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cursos pego com sucesso."
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/evento": {
+      "get": {
+        "tags": [
+          "Evento"
+        ],
+        "operationId": "get_eventos",
+        "responses": {}
+      },
+      "post": {
+        "tags": [
+          "Evento"
+        ],
+        "operationId": "post_evento",
+        "requestBody": {
+          "description": "Artigo to store the database",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtigoComCategorias"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/evento/{id}": {
+      "get": {
+        "tags": [
+          "Evento"
+        ],
+        "operationId": "get_evento_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "tags": [
+          "Evento"
+        ],
+        "operationId": "put_evento",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Artigo to store the database",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ArtigoComCategorias"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/evento/{id}/imagem": {
+      "get": {
+        "tags": [
+          "Evento"
+        ],
+        "operationId": "get_evento_icone",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/inscrever": {
+      "post": {
+        "tags": [
+          "Inscrito"
+        ],
+        "operationId": "post_inscrito",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InscritoWithCursosDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/inscrito": {
+      "get": {
+        "tags": [
+          "Inscrito"
+        ],
+        "operationId": "get_inscritos",
+        "responses": {}
+      }
+    },
+    "/inscrito/{id}": {
+      "get": {
+        "tags": [
+          "Inscrito"
+        ],
+        "operationId": "get_inscrito_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/inscrito/{id}/cursos": {
+      "get": {
+        "tags": [
+          "Inscrito"
+        ],
+        "operationId": "get_inscrito_cursos",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/noticia": {
+      "get": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "get_noticias",
+        "responses": {}
+      },
+      "post": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "post_noticia",
+        "requestBody": {
+          "description": "Noticia do store in the database",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/NewNoticia"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/noticia/recentes": {
+      "get": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "get_noticias_recentes",
+        "responses": {}
+      }
+    },
+    "/noticia/{id}": {
+      "get": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "get_noticia_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "put_noticia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/NewNoticia"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {}
+      },
+      "delete": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "delete_noticia",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/noticia/{id}/imagem": {
+      "get": {
+        "tags": [
+          "Noticia"
+        ],
+        "operationId": "get_noticia_imagem",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Artigo": {
+        "type": "object",
+        "required": [
+          "id",
+          "titulo",
+          "resumo",
+          "palavra_chave",
+          "documento"
+        ],
+        "properties": {
+          "documento": {
+            "type": "string",
+            "format": "binary"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "palavra_chave": {
+            "type": "string"
+          },
+          "resumo": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      },
+      "ArtigoComCategorias": {
+        "type": "object",
+        "required": [
+          "titulo",
+          "resumo",
+          "palavra_chave",
+          "documento",
+          "categorias"
+        ],
+        "properties": {
+          "categorias": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "documento": {
+            "type": "string",
+            "format": "binary"
+          },
+          "palavra_chave": {
+            "type": "string"
+          },
+          "resumo": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      },
+      "Atividade": {
+        "type": "object",
+        "required": [
+          "id",
+          "titulo",
+          "descricao",
+          "responsavel",
+          "inicio",
+          "fim"
+        ],
+        "properties": {
+          "descricao": {
+            "type": "string"
+          },
+          "fim": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "responsavel": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      },
+      "AtividadeDTO": {
+        "type": "object",
+        "required": [
+          "titulo",
+          "descricao",
+          "responsavel",
+          "inicio",
+          "fim"
+        ],
+        "properties": {
+          "descricao": {
+            "type": "string"
+          },
+          "fim": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "responsavel": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      },
+      "Categoria": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "Curso": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "preco"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "preco": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CursoDTO": {
+        "type": "object",
+        "required": [
+          "nome",
+          "preco"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "preco": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Evento": {
+        "type": "object",
+        "required": [
+          "id",
+          "titulo",
+          "sobre",
+          "data_inicio",
+          "data_fim",
+          "tipo",
+          "email",
+          "icone"
+        ],
+        "properties": {
+          "data_fim": {
+            "type": "string",
+            "format": "date"
+          },
+          "data_inicio": {
+            "type": "string",
+            "format": "date"
+          },
+          "email": {
+            "type": "string"
+          },
+          "icone": {
+            "type": "string",
+            "format": "binary"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sobre": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      },
+      "InscritoWithCursosDTO": {
+        "type": "object",
+        "required": [
+          "nome",
+          "nome_cracha",
+          "email",
+          "cpf",
+          "modalidade_nome",
+          "modalidade_preco",
+          "instituicao"
+        ],
+        "properties": {
+          "cpf": {
+            "type": "string"
+          },
+          "cursos": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "email": {
+            "type": "string"
+          },
+          "instituicao": {
+            "type": "string"
+          },
+          "modalidade_nome": {
+            "type": "string"
+          },
+          "modalidade_preco": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "nome_cracha": {
+            "type": "string"
+          }
+        }
+      },
+      "NewCategoria": {
+        "type": "object",
+        "required": [
+          "nome"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string"
+          }
+        }
+      },
+      "NewEvento": {
+        "type": "object",
+        "required": [
+          "titulo",
+          "sobre",
+          "data_inicio",
+          "data_fim",
+          "tipo",
+          "email",
+          "icone"
+        ],
+        "properties": {
+          "data_fim": {
+            "type": "string",
+            "format": "date"
+          },
+          "data_inicio": {
+            "type": "string",
+            "format": "date"
+          },
+          "email": {
+            "type": "string"
+          },
+          "icone": {
+            "type": "string",
+            "format": "binary"
+          },
+          "sobre": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      },
+      "NewNoticia": {
+        "type": "object",
+        "required": [
+          "titulo",
+          "conteudo",
+          "autor",
+          "imagem"
+        ],
+        "properties": {
+          "autor": {
+            "type": "string"
+          },
+          "conteudo": {
+            "type": "string"
+          },
+          "imagem": {
+            "type": "string",
+            "format": "binary"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

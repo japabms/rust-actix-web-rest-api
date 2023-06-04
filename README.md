@@ -16,6 +16,6 @@
 ## API's 
 
 ### TODO!
-- Organizar os as coisas no services
+- Ajeitar a documentação no swagger
 - Adicionar mais metodos para o artigo
 

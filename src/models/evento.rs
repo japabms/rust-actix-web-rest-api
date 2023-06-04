@@ -1,11 +1,12 @@
 use crate::schema::eventos::{self, dsl::*};
+use utoipa::ToSchema;
 use diesel::PgConnection;
 
 use chrono::NaiveDate;
 use diesel::prelude::*;
 use serde::{Serialize, Deserialize};
 
-#[derive(Queryable, Identifiable, Serialize, Deserialize, Selectable, Debug, PartialEq)]
+#[derive(Queryable, Identifiable, Serialize, Deserialize, Selectable, Debug, PartialEq, ToSchema)]
 #[diesel(table_name = eventos)]
 pub struct Evento {
     pub id: i32,
@@ -18,7 +19,7 @@ pub struct Evento {
     pub icone: Vec<u8>,
 }
 
-#[derive(Debug, Default, AsChangeset, Insertable, Serialize, Deserialize)]
+#[derive(Debug, Default, AsChangeset, Insertable, Serialize, Deserialize, ToSchema)]
 #[diesel(table_name = eventos)]
 pub struct NewEvento {
     pub titulo: String,
