@@ -42,7 +42,7 @@ impl Artigo {
             .get_result(&mut conn)
     }
 
-    pub fn insert(artigo: ArtigoComCategorias, mut conn: PgConnection) -> i32 {
+    pub fn insert(artigo: ArtigoComCategorias, mut conn: PgConnection) -> QueryResult<usize> {
         let inserir_artigo = NewArtigo {
             titulo: artigo.titulo,
             resumo: artigo.resumo,
@@ -58,7 +58,7 @@ impl Artigo {
             .values(&inserir_artigo)
             .returning(artigos::id)
             .get_result(&mut conn)
-            .expect("Erro ao inserir");
+            .expect("Erro ao inserir artigo");
 
         let a = artigo
             .categorias
@@ -69,8 +69,6 @@ impl Artigo {
             })
             .collect::<Vec<ArtigoCategorias>>();
 
-        ArtigoCategorias::insert(a, conn);
-
-        a_id
+        ArtigoCategorias::insert(a, conn)
     }
 }

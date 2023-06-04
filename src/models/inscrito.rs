@@ -54,7 +54,7 @@ impl Inscrito {
         inscrito.find(i).get_result::<Inscrito>(&mut conn)
     }
 
-    pub fn insert(new_inscrito: InscritoWithCursosDTO, mut conn: PgConnection) -> i32 {
+    pub fn insert(new_inscrito: InscritoWithCursosDTO, mut conn: PgConnection) -> QueryResult<usize> {
 
         //Inscrito a ser inserido
         let insert_inscrito = InscritoDTO { 
@@ -82,11 +82,10 @@ impl Inscrito {
                 curso_id: c_id,
             }).collect::<Vec<InscritoCurso>>();
 
-            InscritoCurso::insert(c, conn).expect("Erro ao inserir os cursos");
+            InscritoCurso::insert(c, conn)
+        } else {
+            Ok(1) 
         }       
-
-        //retornando o ID do inscrito inserido
-        inserted_inscrito_id
     }
     
     pub fn delete(i: i32,mut conn: PgConnection) -> QueryResult<usize> {

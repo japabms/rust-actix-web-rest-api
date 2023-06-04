@@ -21,7 +21,6 @@ use db::establish_connection;
 
 //TODO!:
 // adicionar web::Data<Pool> ao App para evitar abrir uma conexão com o banco a cada chamada
-// Criar put para todos as entradas, mudar a imagem para opcional
 
 #[get("/db/{table_name}")]
 async fn serial_util(table: web::Path<String>) -> impl Responder {
@@ -57,7 +56,7 @@ async fn main() -> std::io::Result<()> {
 
             .service(post_noticia)
             .service(get_noticias)
-            .service(get_noticia_image)
+            .service(get_noticia_imagem)
             .service(put_noticia)
             .service(get_noticia_by_id)
             .service(get_noticias_recentes)

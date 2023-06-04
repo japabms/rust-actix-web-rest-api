@@ -28,12 +28,10 @@ impl Curso {
         curso.find(i).get_result::<Curso>(&mut conn)
     }
 
-    pub fn insert(new_curso: CursoDTO, mut conn: PgConnection) -> i32 {
+    pub fn insert(new_curso: CursoDTO, mut conn: PgConnection) -> QueryResult<usize> {
         diesel::insert_into(curso)
             .values(&new_curso)
-            .returning(curso::id)
-            .get_result::<i32>(&mut conn)
-            .expect("Erro ao registrar novo curso")
+            .execute(&mut conn)
     }
 
     pub fn update(i: i32, edited_curso: CursoDTO, mut conn: PgConnection) -> QueryResult<usize> {

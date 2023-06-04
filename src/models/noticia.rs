@@ -49,12 +49,11 @@ impl Noticia {
             .select(noticias::imagem)
             .get_result(&mut conn)
     }
-    pub fn insert(new_noticia: NewNoticia, mut conn: PgConnection) -> i32 {
+    pub fn insert(new_noticia: NewNoticia, mut conn: PgConnection) -> QueryResult<i32 >{
         diesel::insert_into(noticias)
             .values(&new_noticia)
             .returning(noticias::id)
             .get_result::<i32>(&mut conn)
-            .expect("Erro ao inserir nova noticia")
     }
 
     pub fn update(i: i32, updated_noticia: NewNoticia, mut conn: PgConnection) -> QueryResult<usize> {

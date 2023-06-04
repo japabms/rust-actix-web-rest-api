@@ -397,6 +397,7 @@ dependencies = [
  "actix-web",
  "bytes",
  "chrono",
+ "derive_more",
  "diesel",
  "diesel_migrations",
  "dotenv",

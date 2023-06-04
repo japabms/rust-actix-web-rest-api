@@ -1,37 +1,28 @@
-use actix_web::{
-    delete, get,  post, web, HttpResponse, Responder, 
-};
+use actix_web::{delete, get, post, web, Responder};
 
-use crate::{db::establish_connection, models::categoria::*};
+use crate::models::categoria::NewCategoria;
+use crate::services::categoria_service;
 
 #[get("/categoria")]
 async fn get_categoria() -> impl Responder {
-    let conn = establish_connection();
-
-    let categorias = Categoria::find_all(conn);
-
-    match categorias {
-        Ok(categorias) => HttpResponse::Ok().json(categorias),
-        Err(_) => HttpResponse::InternalServerError().finish(),
+    match categoria_service::find_all() {
+        Ok(res) => res,
+        Err(err) => err.into(),
     }
 }
 
 #[post("/categoria")]
 async fn post_categoria(json: web::Json<NewCategoria>) -> impl Responder {
-    let conn = establish_connection();
-
-    match Categoria::insert(json.into_inner(), conn) {
-        Ok(_) => HttpResponse::Ok().finish(),
-        Err(_) => HttpResponse::BadRequest().finish(),
+    match categoria_service::insert(json.into_inner()) {
+        Ok(res) => res,
+        Err(err) => err.into(),
     }
 }
 
 #[delete("/categoria/{id}")]
 async fn delete_categoria(id: web::Path<i32>) -> impl Responder {
-    let conn = establish_connection();
-
-    match Categoria::delete(id.into_inner(), conn) {
-        Ok(_) => HttpResponse::Ok().finish(),
-        Err(_) => HttpResponse::BadRequest().finish(),
+    match categoria_service::delete(id.into_inner()) {
+        Ok(res) => res,
+        Err(err) => err.into(),
     }
 }
