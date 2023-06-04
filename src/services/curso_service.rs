@@ -39,20 +39,17 @@ pub fn update(id: i32, curso: CursoDTO) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Curso::update(id, curso, conn) {
-        Ok(num) => Ok(HttpResponse::Ok().body(format!("Número de colunas atualizada: {}", num))),
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhum curso com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }
 
@@ -60,21 +57,16 @@ pub fn delete(id: i32) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Curso::delete(id, conn) {
-        Ok(curso) => {
-            Ok(HttpResponse::Ok().body(format!("Número de colunas atualizada: {}", curso)))
-        }
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhum curso com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }

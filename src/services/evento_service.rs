@@ -218,19 +218,16 @@ pub async fn update(id: i32, mut payload: Multipart) -> Result<HttpResponse, Err
     }
 
     match Evento::update(id, evento, conn) {
-        Ok(_) => Ok(HttpResponse::Ok().finish()),
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhum evento com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }

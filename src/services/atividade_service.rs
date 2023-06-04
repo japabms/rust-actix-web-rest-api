@@ -77,20 +77,17 @@ pub fn update(id: i32, atividade: AtividadeDTO) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Atividade::update(id, atividade, conn) {
-        Ok(num) => Ok(HttpResponse::Ok().body(format!("Numero de colunas atualizadas {}", num))),
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhuma atividade com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }
 
@@ -98,19 +95,16 @@ pub fn delete(id: i32) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Atividade::delete(id, conn) {
-        Ok(_) => Ok(HttpResponse::Ok().finish()),
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhuma atividade com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }

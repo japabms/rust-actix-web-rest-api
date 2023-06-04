@@ -1,5 +1,5 @@
 use actix_web::{
-    delete, get,  post, web, HttpResponse, Responder, error::{self, ErrorInternalServerError, Error, ErrorNotFound}
+    delete, get,  post, web, HttpResponse, Responder, error::{self, ErrorInternalServerError, Error, ErrorNotFound, ErrorBadRequest}
 };
 
 use crate::{db::establish_connection, models::categoria::*};
@@ -26,7 +26,16 @@ pub fn delete(id: i32) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Categoria::delete(id, conn) {
-        Ok(_) => Ok(HttpResponse::NoContent().finish()),
-        Err(err) => Err(ErrorNotFound(format!("Não foi encontrado nenhuma categoria com o id: {}\n{}", id, err)))
+        Ok(i) => {
+            if i == 0 {
+                Err(ErrorNotFound(format!(
+                    "Não foi encontrado nenhuma categoria com o id {}",
+                    id
+                )))
+            } else {
+                Ok(HttpResponse::Ok().finish())
+            }
+        }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }

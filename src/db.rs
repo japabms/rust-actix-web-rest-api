@@ -8,6 +8,7 @@ use std::{env, error::Error};
 
 pub const MIGRATION: EmbeddedMigrations = embed_migrations!("../migrations");
 
+//não sei se isso funciona
 pub fn run_migrations(conn: &mut impl MigrationHarness<Pg>) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
 
     conn.run_pending_migrations(MIGRATION)?;

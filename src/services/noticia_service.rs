@@ -135,7 +135,11 @@ pub async fn update(id: i32 , mut payload: Multipart) -> Result<HttpResponse, Er
     let conn = establish_connection();
     let conn_2 = establish_connection();
 
-    let _noticia = Noticia::find_by_id(id, conn_2).unwrap();
+    let _noticia = match Noticia::find_by_id(id, conn_2) {
+        Ok(noticia) => noticia,
+        Err(err) => return Err(ErrorNotFound(err)),
+    };
+
     let mut noticia = NewNoticia::default();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
@@ -183,20 +187,17 @@ pub async fn update(id: i32 , mut payload: Multipart) -> Result<HttpResponse, Er
     }
 
     match Noticia::update(id, noticia, conn) {
-        Ok(noticia) => Ok(HttpResponse::Ok().body(format!("Número de colunas atualizadas {}", noticia))),
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhuma noticia com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 
 }
@@ -205,19 +206,16 @@ pub fn delete(id: i32) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Noticia::delete_noticia(id, conn) {
-        Ok(noticia) => Ok(HttpResponse::Ok().body(format!("Número de colunas atualizadas {}", noticia))),
-        Err(err) => {
-            if err.to_string().eq("Record not found") {
+        Ok(i) => {
+            if i == 0 {
                 Err(ErrorNotFound(format!(
                     "Não foi encontrado nenhuma noticia com o id {}",
                     id
                 )))
             } else {
-                Err(ErrorBadRequest(format!(
-                    "Não foi possivel completar a sua requisição\n {}",
-                    err
-                )))
+                Ok(HttpResponse::Ok().finish())
             }
         }
+        Err(err) => Err(ErrorBadRequest(err)),
     }
 }
