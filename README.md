@@ -16,4 +16,6 @@
 ## API's 
 
 ### TODO!
+- Organizar os as coisas no services
+- Adicionar mais metodos para o artigo
 
