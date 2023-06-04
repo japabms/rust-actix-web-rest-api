@@ -1,6 +1,23 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    artigo_categorias (artigo_id, categoria_id) {
+        artigo_id -> Int4,
+        categoria_id -> Int4,
+    }
+}
+
+diesel::table! {
+    artigos (id) {
+        id -> Int4,
+        titulo -> Varchar,
+        resumo -> Varchar,
+        palavra_chave -> Varchar,
+        documento -> Bytea,
+    }
+}
+
+diesel::table! {
     atividades (id) {
         id -> Int4,
         titulo -> Varchar,
@@ -8,6 +25,13 @@ diesel::table! {
         responsavel -> Varchar,
         inicio -> Timestamp,
         fim -> Timestamp,
+    }
+}
+
+diesel::table! {
+    categorias (id) {
+        id -> Int4,
+        nome -> Varchar,
     }
 }
 
@@ -63,11 +87,16 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(artigo_categorias -> artigos (artigo_id));
+diesel::joinable!(artigo_categorias -> categorias (categoria_id));
 diesel::joinable!(inscrito_cursos -> curso (curso_id));
 diesel::joinable!(inscrito_cursos -> inscrito (inscrito_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    artigo_categorias,
+    artigos,
     atividades,
+    categorias,
     curso,
     eventos,
     inscrito,

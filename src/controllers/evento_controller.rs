@@ -1,27 +1,21 @@
-use std::io::Write;
-use std::str::FromStr;
 use actix_multipart::Multipart;
+use actix_web::error::ErrorBadRequest;
 use actix_web::Error;
 use actix_web::HttpRequest;
+use actix_web::{get, http::StatusCode, post, put, web, HttpResponse, Responder, ResponseError};
 use chrono::NaiveDate;
+use diesel::PgConnection;
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
-use actix_web::{get, post, put, Responder, web, http::StatusCode, HttpResponse, ResponseError};
-use diesel::PgConnection;
+use std::io::Write;
+use std::str::FromStr;
 
-
-use crate::{
-    models::evento::*,
-    db::establish_connection
-};
-
-
+use crate::{db::establish_connection, models::evento::*};
 
 #[post("/evento")]
-async fn post_evento(mut payload: Multipart, req: HttpRequest) -> Result<HttpResponse, Error>{
-
-    let mut evento = NewEvento::default(); 
-    let conn = establish_connection(); 
+async fn post_evento(mut payload: Multipart, req: HttpRequest) -> Result<HttpResponse, Error> {
+    let mut evento = NewEvento::default();
+    let conn = establish_connection();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();
@@ -76,7 +70,7 @@ async fn post_evento(mut payload: Multipart, req: HttpRequest) -> Result<HttpRes
                         let data = chunk?;
                         email.push_str(std::str::from_utf8(&data)?)
                     }
-                    evento.tipo = email;
+                    evento.email = email;
                 }
                 "icone" => {
                     while let Some(chunk) = field.next().await {
@@ -88,18 +82,18 @@ async fn post_evento(mut payload: Multipart, req: HttpRequest) -> Result<HttpRes
             }
         }
     }
-    
+
     match Evento::insert(evento, conn) {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
-        Err(_) => panic!("F"), 
+        Err(_) => panic!("F"),
     }
 }
 
 #[put("/evento/{id}")]
-async fn put_evento(id: web::Path<i32>, mut payload: Multipart) -> Result<HttpResponse, Error>{
-    let mut evento = NewEvento::default(); 
-    let conn = establish_connection(); 
-    let conn_2 = establish_connection(); 
+async fn put_evento(id: web::Path<i32>, mut payload: Multipart) -> Result<HttpResponse, Error> {
+    let mut evento = NewEvento::default();
+    let conn = establish_connection();
+    let conn_2 = establish_connection();
 
     let _evento = Evento::find_by_id(*id, conn_2).unwrap();
 
@@ -156,7 +150,7 @@ async fn put_evento(id: web::Path<i32>, mut payload: Multipart) -> Result<HttpRe
                         let data = chunk?;
                         email.push_str(std::str::from_utf8(&data)?)
                     }
-                    evento.tipo = email;
+                    evento.email = email;
                 }
                 "icone" => {
                     while let Some(chunk) = field.next().await {
@@ -173,7 +167,10 @@ async fn put_evento(id: web::Path<i32>, mut payload: Multipart) -> Result<HttpRe
         evento.icone = _evento.icone;
     }
 
-    Ok(HttpResponse::Ok().finish())
+    match Evento::update(id.into_inner(), evento, conn) {
+        Ok(_) => Ok(HttpResponse::Ok().finish()),
+        Err(_) => Err(ErrorBadRequest("Something is wrong! kekw")),
+    }
 }
 
 #[get("/evento/{id}/imagem")]
@@ -200,7 +197,7 @@ async fn get_evento_by_id(id: web::Path<i32>) -> impl Responder {
         data_inicio: evento.data_inicio.format("%d-%m-%Y").to_string(),
         data_fim: evento.data_fim.format("%d-%m-%Y").to_string(),
     };
-    
+
     HttpResponse::Ok().json(evento_formatado)
 }
 

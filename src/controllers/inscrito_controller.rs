@@ -37,9 +37,9 @@ async fn get_inscrito_by_id(id: web::Path<i32>) -> impl Responder {
 async fn get_inscrito_cursos(id: web::Path<i32>) -> impl Responder {
     let conn = establish_connection();
 
-    let cursos = InscritoCurso::find_inscrito_cursos(id.into_inner(), conn);
+    let ins_cursos = InscritoCurso::find_inscrito_cursos(id.into_inner(), conn);
 
-    match cursos {
+    match ins_cursos {
         Ok(cursos) => HttpResponse::Ok().json(cursos),
         Err(_) => HttpResponse::NotFound().finish(),
     }

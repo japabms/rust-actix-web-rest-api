@@ -75,4 +75,10 @@ impl Noticia {
             .limit(5)
             .load(&mut conn)
     }
+
+    pub fn delete_noticia(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
+        diesel::delete(noticias)
+            .filter(noticias::id.eq(i))
+            .execute(&mut conn)
+    }
 }

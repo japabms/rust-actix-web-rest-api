@@ -18,7 +18,7 @@ pub struct Evento {
     pub icone: Vec<u8>,
 }
 
-#[derive(Default, AsChangeset, Insertable, Serialize, Deserialize)]
+#[derive(Debug, Default, AsChangeset, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = eventos)]
 pub struct NewEvento {
     pub titulo: String,
@@ -28,17 +28,6 @@ pub struct NewEvento {
     pub tipo: String,
     pub email: String,
     pub icone: Vec<u8>,
-}
-
-#[derive(Default, Queryable, Selectable, Insertable, Serialize, Deserialize, AsChangeset)]
-#[diesel(table_name = eventos)]
-pub struct EventoDtoMinimal {
-    pub titulo: String,
-    pub sobre: String,
-    pub data_inicio: NaiveDate,
-    pub data_fim: NaiveDate,
-    pub tipo: String,
-    pub email: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -76,7 +65,7 @@ impl Evento {
             .get_result::<i32>(&mut conn)
     }
 
-    pub fn update(i: i32, evento: EventoDtoMinimal, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn update(i: i32, evento: NewEvento, mut conn: PgConnection) -> QueryResult<usize> {
         diesel::update(eventos)
             .filter(eventos::id.eq(i))
             .set(&evento)

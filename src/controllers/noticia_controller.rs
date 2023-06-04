@@ -2,6 +2,7 @@ use std::io::Write;
 use actix_multipart::Multipart;
 use actix_web::Error;
 use actix_web::HttpRequest;
+use actix_web::delete;
 use chrono::NaiveDateTime;
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
@@ -143,20 +144,57 @@ async fn get_noticias() -> impl Responder{
     HttpResponse::Ok().json(noticias_formatado)
 }
 
+#[get("/noticia/{id}")]
+async fn get_noticia_by_id(id: web::Path<i32>) -> impl Responder {
+    let conn = establish_connection();
+
+    let noticia = match Noticia::find_by_id(id.into_inner(), conn) {
+        Ok(noticia) => noticia,
+        Err(_) => return HttpResponse::NotFound().finish(),
+    };
+    
+    let noticia_formatado = NoticiaDTO {
+        id: noticia.id,
+        titulo: noticia.titulo.clone(),
+        data: noticia.data.format("%d-%m-%Y %H:%M:%S").to_string(),
+        autor: noticia.autor.clone(),
+        conteudo: noticia.conteudo.clone()
+    };
+
+    HttpResponse::Ok().json(noticia_formatado)
+}
+
 #[get("/noticia/{id}/imagem")]
 async fn get_noticia_image(id: web::Path<i32>) -> impl Responder {
     let conn = establish_connection();
 
-    let imagem = Noticia::find_image(id.into_inner(), conn).unwrap();
+    let imagem = Noticia::find_image(id.into_inner(), conn);
 
-    HttpResponse::Ok().content_type("image/png").body(imagem)
+    match imagem {
+        Ok(img) => HttpResponse::Ok().content_type("image/png").body(img),
+        Err(_) => HttpResponse::NotFound().finish(),
+    }
+    
 }
 
 #[get("/noticia/recentes")]
 async fn get_noticias_recentes() -> impl Responder {
     let conn = establish_connection();
 
-    let noticias_recentes = Noticia::find_noticias_recente(conn).unwrap();
+    let noticias_recentes = Noticia::find_noticias_recente(conn);
 
-    HttpResponse::Ok().json(noticias_recentes)
+    match noticias_recentes {
+        Ok(noticias) => HttpResponse::Ok().json(noticias),
+        Err(_) => HttpResponse::InternalServerError().body("Algo de errado não está certo!"),
+    }
+}
+
+#[delete("/noticia/{id}")]
+async fn delete_noticia(id: web::Path<i32>) -> impl Responder {
+    let conn = establish_connection();
+
+    match Noticia::delete_noticia(id.into_inner(), conn) {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(_) => HttpResponse::NotFound().finish()
+    }
 }

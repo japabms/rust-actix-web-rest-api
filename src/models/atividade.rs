@@ -35,15 +35,14 @@ pub struct AtividadeDtoDataFormatada {
 }
 
 impl Atividade {
-    pub fn find_all(mut conn: PgConnection) -> Vec<Atividade> {
-        atividades.load(&mut conn).expect("F")
+    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Atividade>> {
+        atividades.load(&mut conn)
     }
 
-    pub fn find_by_id(i: i32, mut conn: PgConnection) -> Atividade {
+    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Atividade> {
         atividades
             .filter(atividades::id.eq(i))
             .get_result(&mut conn)
-            .expect("F")
     }
 
     pub fn insert(new_atividade: AtividadeDTO, mut conn: PgConnection) -> QueryResult<i32> {
@@ -59,6 +58,10 @@ impl Atividade {
             .set(&atividade)
             .execute(&mut conn)
     }
+
+    pub fn delete(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
+        diesel::delete(atividades)
+            .filter(atividades::id.eq(i))
+            .execute(&mut conn)
+    }
 }
-//funcao que recebe um dia e retorna todas as atividades daquele dia.
-//que horas começa as atividades que horas termina?
