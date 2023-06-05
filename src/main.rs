@@ -23,7 +23,7 @@ use utoipa::OpenApi;
 
 #[derive(OpenApi)]
 #[openapi(
-    info(title = "CESC-API"),
+    info(title = "CONFESC-API"),
     paths(
         get_cursos,
         get_curso_by_id,
