@@ -1,8 +1,8 @@
+#[allow(unused_imports, unused_variables)]
 pub mod controllers;
 pub mod db;
 pub mod models;
 pub mod schema;
-#[allow(unused_imports, unused_variables)]
 pub mod services;
 
 // use std::{fs::File, io::Write};
