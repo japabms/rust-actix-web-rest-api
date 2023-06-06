@@ -27,9 +27,7 @@ async fn put_noticia(id: web::Path<i32>, payload: Multipart) -> impl Responder {
     }
 }
 
-#[utoipa::path(
-    tag = "Noticia",
-)]
+#[utoipa::path(tag = "Noticia")]
 #[get("/noticia")]
 async fn get_noticias() -> impl Responder {
     match noticia_service::find_all() {
@@ -38,9 +36,7 @@ async fn get_noticias() -> impl Responder {
     }
 }
 
-#[utoipa::path(
-    tag = "Noticia",
-)]
+#[utoipa::path(tag = "Noticia")]
 #[get("/noticia/{id}")]
 async fn get_noticia_by_id(id: web::Path<i32>) -> impl Responder {
     match noticia_service::find_by_id(id.into_inner()) {
@@ -49,9 +45,7 @@ async fn get_noticia_by_id(id: web::Path<i32>) -> impl Responder {
     }
 }
 
-#[utoipa::path(
-    tag = "Noticia",
-)]
+#[utoipa::path(tag = "Noticia")]
 #[get("/noticia/{id}/imagem")]
 async fn get_noticia_imagem(id: web::Path<i32>) -> impl Responder {
     match noticia_service::find_imagem(id.into_inner()) {
@@ -60,9 +54,7 @@ async fn get_noticia_imagem(id: web::Path<i32>) -> impl Responder {
     }
 }
 
-#[utoipa::path(
-    tag = "Noticia",
-)]
+#[utoipa::path(tag = "Noticia")]
 #[get("/noticia/recentes")]
 async fn get_noticias_recentes() -> impl Responder {
     match noticia_service::find_noticia_recente() {
@@ -71,9 +63,7 @@ async fn get_noticias_recentes() -> impl Responder {
     }
 }
 
-#[utoipa::path(
-    tag = "Noticia",
-)]
+#[utoipa::path(tag = "Noticia")]
 #[delete("/noticia/{id}")]
 async fn delete_noticia(id: web::Path<i32>) -> impl Responder {
     match noticia_service::delete(id.into_inner()) {

@@ -6,7 +6,7 @@ use diesel_migrations::{self, embed_migrations, EmbeddedMigrations, MigrationHar
 use dotenv::dotenv;
 use std::{env, error::Error};
 
-pub const MIGRATION: EmbeddedMigrations = embed_migrations!("../migrations");
+pub const MIGRATION: EmbeddedMigrations = embed_migrations!();
 
 //não sei se isso funciona
 pub fn run_migrations(conn: &mut impl MigrationHarness<Pg>) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {

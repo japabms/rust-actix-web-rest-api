@@ -1,8 +1,7 @@
 use actix_web::{
-    delete,
     error::Error,
-    error::{ErrorBadRequest, ErrorInternalServerError, ErrorNotFound},
-    get, post, put, web, HttpResponse, Responder,
+    error::{ErrorBadRequest, ErrorNotFound},
+    HttpResponse,
 };
 
 use crate::{db::establish_connection, models::atividade::*};

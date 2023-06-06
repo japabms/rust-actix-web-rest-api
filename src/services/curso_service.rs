@@ -27,7 +27,7 @@ pub fn insert(curso: CursoDTO) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
 
     match Curso::insert(curso, conn) {
-        Ok(num) => Ok(HttpResponse::NoContent().finish()),
+        Ok(_) => Ok(HttpResponse::NoContent().finish()),
         Err(err) => Err(ErrorBadRequest(format!(
             "Não foi possivel completar a sua requisição\n {}",
             err

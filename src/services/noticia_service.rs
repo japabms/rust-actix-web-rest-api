@@ -1,14 +1,12 @@
-use futures_util::StreamExt as _;
-use std::io::Write;
-use actix_web::web::Bytes;
-use futures_util::TryStreamExt as _;
 use actix_multipart::Multipart;
 use actix_web::{
-    delete,
     error::Error,
     error::{ErrorBadRequest, ErrorInternalServerError, ErrorNotFound},
-    get, post, put, web, HttpResponse, Responder,
+    HttpResponse,
 };
+use futures_util::StreamExt as _;
+use futures_util::TryStreamExt as _;
+use std::io::Write;
 
 use crate::{db::establish_connection, models::noticia::*};
 
@@ -131,7 +129,7 @@ pub async fn insert(mut payload: Multipart) -> Result<HttpResponse, Error> {
     }
 }
 
-pub async fn update(id: i32 , mut payload: Multipart) -> Result<HttpResponse, Error> {
+pub async fn update(id: i32, mut payload: Multipart) -> Result<HttpResponse, Error> {
     let conn = establish_connection();
     let conn_2 = establish_connection();
 
@@ -199,7 +197,6 @@ pub async fn update(id: i32 , mut payload: Multipart) -> Result<HttpResponse, Er
         }
         Err(err) => Err(ErrorBadRequest(err)),
     }
-
 }
 
 pub fn delete(id: i32) -> Result<HttpResponse, Error> {
