@@ -1,12 +1,12 @@
+use crate::{db::establish_connection, models::artigo::*};
 use actix_multipart::Multipart;
-use actix_web::error::ErrorBadRequest;
+use actix_web::error::{ErrorBadRequest, ErrorInternalServerError, ErrorNotFound};
 use actix_web::web::Bytes;
 use actix_web::Error;
 use actix_web::{get, post, put, web, HttpResponse, Responder};
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use std::io::Write;
-use crate::{db::establish_connection, models::artigo::*};
 
 pub async fn insert(mut payload: Multipart) -> Result<(), Error> {
     let mut artigo = ArtigoComCategorias::default();
@@ -73,12 +73,71 @@ pub async fn insert(mut payload: Multipart) -> Result<(), Error> {
     }
 
     match Artigo::insert(artigo, conn) {
-        Ok(num) => Ok(()),
-        Err(err) => {
-            Err(ErrorBadRequest(format!(
-                "Não foi possível completar a sua requisição.\n {}",
-                err
-            )))
-        }
+        Ok(_) => Ok(()),
+        Err(err) => Err(ErrorBadRequest(format!(
+            "Não foi possível completar a sua requisição.\n {}",
+            err
+        ))),
+    }
+}
+
+pub fn find_artigo_documento(id: i32) -> Result<HttpResponse, Error> {
+    let conn = establish_connection();
+
+    match Artigo::find_documento(id, conn) {
+        Ok(documento) => Ok(HttpResponse::Ok()
+            .content_type("application/pdf")
+            .body(documento)),
+        Err(err) => Err(ErrorNotFound(err)),
+    }
+}
+
+pub fn find_all() -> Result<HttpResponse, Error> {
+    let conn = establish_connection();
+    let mut artigos_dto: Vec<ArtigoDTO> = Vec::new();
+
+    let artigos = match Artigo::find_all(conn) {
+        Ok(artigos) => artigos,
+        Err(err) => return Err(ErrorInternalServerError(err)),
+    };
+
+    for artigo in artigos {
+        let artigo_dto = ArtigoDTO {
+            id: artigo.id,
+            titulo: artigo.titulo,
+            resumo: artigo.resumo,
+            palavra_chave: artigo.palavra_chave,
+        };
+
+        artigos_dto.push(artigo_dto);
+    }
+
+    Ok(HttpResponse::Ok().json(artigos_dto))
+}
+
+pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
+    let conn = establish_connection();
+
+    let artigo = match Artigo::find_by_id(id, conn) {
+        Ok(artigo) => artigo,
+        Err(err) => return Err(ErrorNotFound(err)),
+    };
+
+    let artigo_dto = ArtigoDTO {
+        id: artigo.id,
+        titulo: artigo.titulo,
+        resumo: artigo.resumo,
+        palavra_chave: artigo.palavra_chave,
+    };
+
+    Ok(HttpResponse::Ok().json(artigo_dto))
+}
+
+pub fn delete(id: i32) -> Result<HttpResponse, Error> {
+    let conn = establish_connection();
+
+    match Artigo::delete(id, conn) {
+        Ok(_) => Ok(HttpResponse::Ok().finish()),
+        Err(err) => Err(ErrorNotFound(err))
     }
 }

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "CESC-API",
+    "title": "CONFESC-API",
     "description": "",
     "license": {
       "name": ""
@@ -10,6 +10,13 @@
   },
   "paths": {
     "/artigo": {
+      "get": {
+        "tags": [
+          "Artigo"
+        ],
+        "operationId": "get_artigos",
+        "responses": {}
+      },
       "post": {
         "tags": [
           "Artigo"
@@ -34,6 +41,64 @@
             "description": ""
           }
         }
+      }
+    },
+    "/artigo/{id}": {
+      "get": {
+        "tags": [
+          "Artigo"
+        ],
+        "operationId": "get_artigo_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      },
+      "delete": {
+        "tags": [
+          "Artigo"
+        ],
+        "operationId": "delete_artigo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/artigo/{id}/documento": {
+      "get": {
+        "tags": [
+          "Artigo"
+        ],
+        "operationId": "get_artigo_documento",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {}
       }
     },
     "/atividade": {

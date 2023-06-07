@@ -5,13 +5,14 @@ pub mod models;
 pub mod schema;
 pub mod services;
 
-// use std::{fs::File, io::Write};
+use std::{fs::File, io::Write};
 
 use controllers::{
     artigo_controller::*, atividade_controller::*, categoria_controller::*, curso_controller::*,
     evento_controller::*, inscrito_controller::*, noticia_controller::*,
 };
 
+use env_logger;
 use actix_cors::Cors;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use db::{establish_connection, run_migrations};
@@ -54,7 +55,11 @@ use utoipa_swagger_ui::SwaggerUi;
         get_noticias_recentes,
         put_noticia,
         delete_noticia,
-        post_noticia
+        post_noticia,
+        get_artigo_documento,
+        get_artigo_by_id,
+        get_artigos,
+        delete_artigo,
     ),
     components(schemas(
         Curso,
@@ -89,8 +94,11 @@ async fn serial_util(table: web::Path<String>) -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // let mut file = File::create("openapi.json")?;
-    // file.write_all(ApiDoc::openapi().to_pretty_json().unwrap().as_bytes())?;
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+
+    let mut file = File::create("openapi.json")?;
+    file.write_all(ApiDoc::openapi().to_pretty_json().unwrap().as_bytes())?;
+
     let mut conn = establish_connection();
     run_migrations(&mut conn).expect("Error");
 
@@ -129,6 +137,11 @@ async fn main() -> std::io::Result<()> {
             .service(post_atividade)
             .service(delete_atividade)
             .service(post_artigo)
+            .service(get_artigo_documento)
+            .service(get_artigo_by_id)
+            .service(get_artigos)
+            .service(get_artigos)
+            .service(delete_artigo)
             .service(post_categoria)
             .service(get_categoria)
             .service(delete_categoria)
@@ -137,6 +150,7 @@ async fn main() -> std::io::Result<()> {
                 "/home/victor/workspace/rust/cesc-api/openapi.json",
                 ApiDoc::openapi(),
             ))
+            .wrap(actix_web::middleware::Logger::default())
     })
     .bind(("0.0.0.0", 8080))? //0.0.0.0 binda o server em todas as interfaces de rede disponiveis
     .run()

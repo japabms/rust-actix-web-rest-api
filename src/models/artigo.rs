@@ -32,6 +32,14 @@ pub struct ArtigoComCategorias {
     pub categorias: Vec<i32>,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct ArtigoDTO {
+    pub id: i32,
+    pub titulo: String,
+    pub resumo: String,
+    pub palavra_chave: String,
+}
+
 impl Artigo {
     pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Artigo>> {
         artigos.load(&mut conn)
@@ -40,6 +48,14 @@ impl Artigo {
     pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Artigo> {
         artigos
             .filter(artigos::id.eq(i))
+            .get_result(&mut conn)
+    }
+
+
+    pub fn find_documento(i: i32, mut conn: PgConnection) -> QueryResult<Vec<u8>> {
+        artigos
+            .filter(artigos::id.eq(i))
+            .select(artigos::documento)
             .get_result(&mut conn)
     }
 
@@ -71,5 +87,11 @@ impl Artigo {
             .collect::<Vec<ArtigoCategorias>>();
 
         ArtigoCategorias::insert(a, conn)
+    }
+
+    pub fn delete(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
+        diesel::delete(artigos)
+            .filter(artigos::id.eq(i))
+            .execute(&mut conn)
     }
 }
