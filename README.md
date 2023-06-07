@@ -1,5 +1,7 @@
 # Actix-web REST API
 
+Backend para um site de um evento, que aceite cadastro, submissão de artigo, etc...
+
 ## Requisitos
 
 - [Rust Stable](https://rustup.rs)
@@ -7,11 +9,8 @@
 
 ## Como usar
 
-- Instalar o diesel cli com o cargo
-    `cargo install diesel_cli --no-default-features --features postgres`
-- Criar o banco de dados com `diesel database setup`
 - Atualizar o DATABASE_URL no arquivo .env
-- Construir com `cargo build --release` ou rodar com `cargo run --release`
+- Buildar o projeto com `cargo build --release` ou rodar com `cargo run --release`
 
 ## API's 
 
