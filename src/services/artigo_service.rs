@@ -1,4 +1,4 @@
-use crate::{db::establish_connection, models::artigo::*};
+use crate::models::artigo::*;
 use actix_multipart::Multipart;
 use actix_web::error::{ErrorBadRequest, ErrorInternalServerError, ErrorNotFound};
 use actix_web::web::Bytes;
@@ -81,8 +81,7 @@ pub async fn insert(mut payload: Multipart, conn: &mut PgConnection) -> Result<(
     }
 }
 
-pub fn find_artigo_documento(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_artigo_documento(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Artigo::find_documento(id, conn) {
         Ok(documento) => Ok(HttpResponse::Ok()
             .content_type("application/pdf")
@@ -91,7 +90,7 @@ pub fn find_artigo_documento(id: i32, conn:  &mut PgConnection) -> Result<HttpRe
     }
 }
 
-pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
+pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     let mut artigos_dto: Vec<ArtigoDTO> = Vec::new();
 
     let artigos = match Artigo::find_all(conn) {
@@ -113,8 +112,7 @@ pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(artigos_dto))
 }
 
-pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     let artigo = match Artigo::find_by_id(id, conn) {
         Ok(artigo) => artigo,
         Err(err) => return Err(ErrorNotFound(err)),
@@ -131,9 +129,8 @@ pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Err
 }
 
 pub fn delete(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
-
     match Artigo::delete(id, conn) {
         Ok(_) => Ok(HttpResponse::Ok().finish()),
-        Err(err) => Err(ErrorNotFound(err))
+        Err(err) => Err(ErrorNotFound(err)),
     }
 }

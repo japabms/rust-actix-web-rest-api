@@ -3,27 +3,24 @@ use actix_web::{
     HttpResponse,
 };
 
+use crate::models::curso::*;
 use diesel::PgConnection;
-use crate::{db::establish_connection, models::curso::*};
 
-pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::find_all(conn) {
         Ok(cursos) => Ok(HttpResponse::Ok().json(cursos)),
         Err(err) => Err(ErrorInternalServerError(err)),
     }
 }
 
-pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::find_by_id(id, conn) {
         Ok(curso) => Ok(HttpResponse::Ok().json(curso)),
         Err(err) => Err(ErrorNotFound(err)),
     }
 }
 
-pub fn insert(curso: CursoDTO, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn insert(curso: CursoDTO, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::insert(curso, conn) {
         Ok(_) => Ok(HttpResponse::NoContent().finish()),
         Err(err) => Err(ErrorBadRequest(format!(
@@ -33,8 +30,7 @@ pub fn insert(curso: CursoDTO, conn:  &mut PgConnection) -> Result<HttpResponse,
     }
 }
 
-pub fn update(id: i32, curso: CursoDTO, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn update(id: i32, curso: CursoDTO, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::update(id, curso, conn) {
         Ok(i) => {
             if i == 0 {
@@ -50,8 +46,7 @@ pub fn update(id: i32, curso: CursoDTO, conn:  &mut PgConnection) -> Result<Http
     }
 }
 
-pub fn delete(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn delete(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::delete(id, conn) {
         Ok(i) => {
             if i == 0 {

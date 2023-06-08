@@ -4,7 +4,9 @@ use utoipa::ToSchema;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
+#[derive(
+    ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize,
+)]
 #[diesel(table_name = curso)]
 #[diesel(primary_key(id))]
 pub struct Curso {
@@ -30,9 +32,7 @@ impl Curso {
     }
 
     pub fn insert(new_curso: CursoDTO, conn: &mut PgConnection) -> QueryResult<usize> {
-        diesel::insert_into(curso)
-            .values(&new_curso)
-            .execute(conn)
+        diesel::insert_into(curso).values(&new_curso).execute(conn)
     }
 
     pub fn update(i: i32, edited_curso: CursoDTO, conn: &mut PgConnection) -> QueryResult<usize> {

@@ -6,7 +6,9 @@ use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::{Deserialize, Serialize};
 
-#[derive(ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize)]
+#[derive(
+    ToSchema, Queryable, Selectable, Identifiable, PartialEq, Debug, Clone, Serialize, Deserialize,
+)]
 #[diesel(table_name = noticias)]
 pub struct Noticia {
     pub id: i32,
@@ -50,14 +52,18 @@ impl Noticia {
             .select(noticias::imagem)
             .get_result(conn)
     }
-    pub fn insert(new_noticia: NewNoticia, conn: &mut PgConnection) -> QueryResult<i32 >{
+    pub fn insert(new_noticia: NewNoticia, conn: &mut PgConnection) -> QueryResult<i32> {
         diesel::insert_into(noticias)
             .values(&new_noticia)
             .returning(noticias::id)
             .get_result::<i32>(conn)
     }
 
-    pub fn update(i: i32, updated_noticia: NewNoticia, conn: &mut PgConnection) -> QueryResult<usize> {
+    pub fn update(
+        i: i32,
+        updated_noticia: NewNoticia,
+        conn: &mut PgConnection,
+    ) -> QueryResult<usize> {
         diesel::update(noticias)
             .filter(noticias::id.eq(i))
             .set((
@@ -70,10 +76,7 @@ impl Noticia {
     }
 
     pub fn find_noticias_recente(conn: &mut PgConnection) -> QueryResult<Vec<Noticia>> {
-        noticias
-            .order(noticias::data.desc())
-            .limit(5)
-            .load(conn)
+        noticias.order(noticias::data.desc()).limit(5).load(conn)
     }
 
     pub fn delete_noticia(i: i32, conn: &mut PgConnection) -> QueryResult<usize> {

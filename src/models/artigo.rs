@@ -1,7 +1,7 @@
 use crate::schema::artigos::{self, dsl::*};
-use utoipa::{ToSchema, IntoParams};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 
 use crate::models::artigo_categorias::ArtigoCategorias;
 
@@ -46,11 +46,8 @@ impl Artigo {
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Artigo> {
-        artigos
-            .filter(artigos::id.eq(i))
-            .get_result(conn)
+        artigos.filter(artigos::id.eq(i)).get_result(conn)
     }
-
 
     pub fn find_documento(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<u8>> {
         artigos

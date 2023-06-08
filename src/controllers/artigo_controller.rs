@@ -1,10 +1,10 @@
 use std::ops::DerefMut;
 
 use actix_multipart::Multipart;
-use actix_web::{get, post, put, web, HttpResponse, Responder, delete};
+use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use diesel::IntoSql;
 
-use crate::{services::artigo_service, models::artigo::ArtigoComCategorias, db::DbPool};
+use crate::{db::DbPool, models::artigo::ArtigoComCategorias, services::artigo_service};
 
 #[utoipa::path(tag = "Artigo")]
 #[get("/artigo")]
@@ -23,7 +23,6 @@ async fn get_artigo_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
         Err(err) => err.into(),
     }
 }
-
 
 #[utoipa::path(
     tag = "Artigo",

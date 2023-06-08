@@ -3,27 +3,24 @@ use actix_web::{
     HttpResponse,
 };
 
+use crate::models::categoria::*;
 use diesel::PgConnection;
-use crate::{db::establish_connection, models::categoria::*};
 
-pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Categoria::find_all(conn) {
         Ok(categorias) => Ok(HttpResponse::Ok().json(categorias)),
         Err(err) => Err(ErrorInternalServerError(err)),
     }
 }
 
-pub fn insert(categoria: NewCategoria, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn insert(categoria: NewCategoria, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Categoria::insert(categoria, conn) {
         Ok(_) => Ok(HttpResponse::NoContent().finish()),
         Err(err) => Err(ErrorInternalServerError(err)),
     }
 }
 
-pub fn delete(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn delete(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Categoria::delete(id, conn) {
         Ok(i) => {
             if i == 0 {

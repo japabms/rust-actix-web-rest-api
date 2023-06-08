@@ -1,12 +1,14 @@
 use crate::schema::eventos::{self, dsl::*};
-use utoipa::ToSchema;
 use diesel::PgConnection;
+use utoipa::ToSchema;
 
 use chrono::NaiveDate;
 use diesel::prelude::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Identifiable, Serialize, Deserialize, Selectable, Debug, PartialEq, ToSchema)]
+#[derive(
+    Queryable, Identifiable, Serialize, Deserialize, Selectable, Debug, PartialEq, ToSchema,
+)]
 #[diesel(table_name = eventos)]
 pub struct Evento {
     pub id: i32,
@@ -43,22 +45,21 @@ pub struct EventoDtoDataFormatada {
 }
 
 impl Evento {
-    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Evento>>{
-        eventos
-            .load(conn)
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Evento>> {
+        eventos.load(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Evento> {
-        eventos.filter(eventos::id.eq(i))
-            .get_result(conn)
+        eventos.filter(eventos::id.eq(i)).get_result(conn)
     }
 
     pub fn find_icone(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<u8>> {
-        eventos.filter(eventos::id.eq(i))
+        eventos
+            .filter(eventos::id.eq(i))
             .select(eventos::icone)
             .get_result::<Vec<u8>>(conn)
     }
- 
+
     pub fn insert(new_evento: NewEvento, conn: &mut PgConnection) -> QueryResult<i32> {
         diesel::insert_into(eventos)
             .values(&new_evento)

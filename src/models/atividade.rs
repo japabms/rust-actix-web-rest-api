@@ -1,11 +1,13 @@
 use crate::schema::atividades::{self, dsl::*};
-use utoipa::ToSchema;
 use chrono::NaiveDateTime;
 use diesel::prelude::*;
 use diesel::PgConnection;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(ToSchema, Queryable, Identifiable, Selectable, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(
+    ToSchema, Queryable, Identifiable, Selectable, PartialEq, Debug, Serialize, Deserialize,
+)]
 pub struct Atividade {
     pub id: i32,
     pub titulo: String,
@@ -41,9 +43,7 @@ impl Atividade {
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Atividade> {
-        atividades
-            .filter(atividades::id.eq(i))
-            .get_result(conn)
+        atividades.filter(atividades::id.eq(i)).get_result(conn)
     }
 
     pub fn insert(new_atividade: AtividadeDTO, conn: &mut PgConnection) -> QueryResult<i32> {

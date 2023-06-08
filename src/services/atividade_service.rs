@@ -4,11 +4,10 @@ use actix_web::{
     HttpResponse,
 };
 
+use crate::models::atividade::*;
 use diesel::PgConnection;
-use crate:: models::atividade::*;
 
-pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     let mut atividades = match Atividade::find_all(conn) {
         Ok(ativ) => ativ,
         Err(_) => {
@@ -35,8 +34,7 @@ pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(atividades_formatada))
 }
 
-pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     let atividade = match Atividade::find_by_id(id, conn) {
         Ok(ativ) => ativ,
         Err(_) => {
@@ -59,8 +57,7 @@ pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Err
     Ok(HttpResponse::Ok().json(atividade_formatada))
 }
 
-pub fn insert(atividade: AtividadeDTO, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn insert(atividade: AtividadeDTO, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Atividade::insert(atividade, conn) {
         Ok(id) => Ok(HttpResponse::Ok().body(format!("Atividade com o id {} foi inserida", id))),
         Err(err) => Err(ErrorBadRequest(format!(
@@ -70,8 +67,11 @@ pub fn insert(atividade: AtividadeDTO, conn:  &mut PgConnection) -> Result<HttpR
     }
 }
 
-pub fn update(id: i32, atividade: AtividadeDTO, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn update(
+    id: i32,
+    atividade: AtividadeDTO,
+    conn: &mut PgConnection,
+) -> Result<HttpResponse, Error> {
     match Atividade::update(id, atividade, conn) {
         Ok(i) => {
             if i == 0 {
@@ -87,8 +87,7 @@ pub fn update(id: i32, atividade: AtividadeDTO, conn:  &mut PgConnection) -> Res
     }
 }
 
-pub fn delete(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
-
+pub fn delete(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Atividade::delete(id, conn) {
         Ok(i) => {
             if i == 0 {

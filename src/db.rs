@@ -1,7 +1,8 @@
 use diesel::{
+    pg::Pg,
     prelude::*,
-    sql_query, pg::Pg, 
-    r2d2::{Pool, ConnectionManager}
+    r2d2::{ConnectionManager, Pool},
+    sql_query,
 };
 use diesel_migrations::{self, embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
@@ -12,8 +13,9 @@ pub type DbPool = diesel::r2d2::Pool<ConnectionManager<PgConnection>>;
 pub const MIGRATION: EmbeddedMigrations = embed_migrations!();
 
 //não sei se isso funciona
-pub fn run_migrations(conn: &mut impl MigrationHarness<Pg>) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
-
+pub fn run_migrations(
+    conn: &mut impl MigrationHarness<Pg>,
+) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     conn.run_pending_migrations(MIGRATION)?;
     Ok(())
 }
@@ -25,7 +27,10 @@ pub fn get_pool() -> DbPool {
 
     let manager = ConnectionManager::<PgConnection>::new(database_url);
 
-    Pool::builder().max_size(10).build(manager).expect("Erro ao criar pool")
+    Pool::builder()
+        .max_size(10)
+        .build(manager)
+        .expect("Erro ao criar pool")
 }
 
 pub fn establish_connection() -> PgConnection {
@@ -38,10 +43,15 @@ pub fn establish_connection() -> PgConnection {
 }
 
 //testing some things
-pub fn reset_serial(table_name: &str, column_name: &str, mut conn: PgConnection) -> QueryResult<()>{
-    let query = format!("ALTER SEQUENCE {} RESTART WITH 1", format!("{}_{}_seq", table_name, column_name));
+pub fn reset_serial(
+    table_name: &str,
+    column_name: &str,
+    mut conn: PgConnection,
+) -> QueryResult<()> {
+    let query = format!(
+        "ALTER SEQUENCE {} RESTART WITH 1",
+        format!("{}_{}_seq", table_name, column_name)
+    );
     sql_query(query).execute(&mut conn)?;
     Ok(())
 }
-
-

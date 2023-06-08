@@ -2,7 +2,7 @@ use std::ops::DerefMut;
 
 use actix_web::{get, post, web, Responder};
 
-use crate::{models::inscrito::*, services::inscrito_service, db::DbPool};
+use crate::{db::DbPool, models::inscrito::*, services::inscrito_service};
 
 #[utoipa::path(tag = "Inscrito")]
 #[get("/inscrito")]
@@ -36,7 +36,10 @@ async fn get_inscrito_cursos(id: web::Path<i32>, pool: web::Data<DbPool>) -> imp
     request_body = InscritoWithCursosDTO
 )]
 #[post("/inscrever")]
-async fn post_inscrito(json: web::Json<InscritoWithCursosDTO>, pool: web::Data<DbPool>) -> impl Responder {
+async fn post_inscrito(
+    json: web::Json<InscritoWithCursosDTO>,
+    pool: web::Data<DbPool>,
+) -> impl Responder {
     match inscrito_service::insert(json.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
