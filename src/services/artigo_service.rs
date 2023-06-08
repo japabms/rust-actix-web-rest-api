@@ -3,14 +3,14 @@ use actix_multipart::Multipart;
 use actix_web::error::{ErrorBadRequest, ErrorInternalServerError, ErrorNotFound};
 use actix_web::web::Bytes;
 use actix_web::Error;
-use actix_web::{get, post, put, web, HttpResponse, Responder};
+use actix_web::HttpResponse;
+use diesel::PgConnection;
 use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use std::io::Write;
 
-pub async fn insert(mut payload: Multipart) -> Result<(), Error> {
+pub async fn insert(mut payload: Multipart, conn: &mut PgConnection) -> Result<(), Error> {
     let mut artigo = ArtigoComCategorias::default();
-    let conn = establish_connection();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();
@@ -81,8 +81,7 @@ pub async fn insert(mut payload: Multipart) -> Result<(), Error> {
     }
 }
 
-pub fn find_artigo_documento(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_artigo_documento(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Artigo::find_documento(id, conn) {
         Ok(documento) => Ok(HttpResponse::Ok()
@@ -92,8 +91,7 @@ pub fn find_artigo_documento(id: i32) -> Result<HttpResponse, Error> {
     }
 }
 
-pub fn find_all() -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
     let mut artigos_dto: Vec<ArtigoDTO> = Vec::new();
 
     let artigos = match Artigo::find_all(conn) {
@@ -115,8 +113,7 @@ pub fn find_all() -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(artigos_dto))
 }
 
-pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     let artigo = match Artigo::find_by_id(id, conn) {
         Ok(artigo) => artigo,
@@ -133,8 +130,7 @@ pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(artigo_dto))
 }
 
-pub fn delete(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn delete(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Artigo::delete(id, conn) {
         Ok(_) => Ok(HttpResponse::Ok().finish()),

@@ -8,10 +8,9 @@ use futures_util::TryStreamExt as _;
 use std::io::Write;
 
 use crate::{db::establish_connection, models::evento::*};
+use diesel::PgConnection;
 
-pub fn find_all() -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
-
+pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     let eventos = match Evento::find_all(conn) {
         Ok(eventos) => eventos,
         Err(err) => return Err(ErrorInternalServerError(err)),
@@ -35,9 +34,7 @@ pub fn find_all() -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(eventos_formatado))
 }
 
-pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
-
+pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     let evento = match Evento::find_by_id(id, conn) {
         Ok(evento) => evento,
         Err(err) => return Err(ErrorNotFound(err)),
@@ -56,17 +53,20 @@ pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(evento_formatado))
 }
 
-pub fn find_icone(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
-
+pub fn find_icone(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Evento::find_icone(id, conn) {
         Ok(img) => Ok(HttpResponse::Ok().content_type("image/png").body(img)),
-        Err(err) => Err(ErrorNotFound(format!("Não foi encontrado nenhuma imagem no evento com id {}\n{}", id, err)))
+        Err(err) => Err(ErrorNotFound(format!(
+            "Não foi encontrado nenhuma imagem no evento com id {}\n{}",
+            id, err
+        ))),
     }
 }
-pub async fn insert(mut payload: Multipart) -> Result<HttpResponse, Error> {
+pub async fn insert(
+    mut payload: Multipart,
+    conn: &mut PgConnection,
+) -> Result<HttpResponse, Error> {
     let mut evento = NewEvento::default();
-    let conn = establish_connection();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();
@@ -136,16 +136,19 @@ pub async fn insert(mut payload: Multipart) -> Result<HttpResponse, Error> {
 
     match Evento::insert(evento, conn) {
         Ok(_) => Ok(HttpResponse::NoContent().finish()),
-        Err(err) => Err(ErrorInternalServerError(err))
+        Err(err) => Err(ErrorInternalServerError(err)),
     }
 }
 
-pub async fn update(id: i32, mut payload: Multipart) -> Result<HttpResponse, Error> {
+pub async fn update(
+    id: i32,
+    mut payload: Multipart,
+    conn: &mut PgConnection,
+) -> Result<HttpResponse, Error> {
     let mut evento = NewEvento::default();
-    let conn = establish_connection();
-    let conn_2 = establish_connection();
+    let mut conn_2 = establish_connection();
 
-    let _evento = Evento::find_by_id(id, conn_2).unwrap();
+    let _evento = Evento::find_by_id(id, &mut conn_2).unwrap();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();

@@ -41,25 +41,25 @@ pub struct ArtigoDTO {
 }
 
 impl Artigo {
-    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Artigo>> {
-        artigos.load(&mut conn)
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Artigo>> {
+        artigos.load(conn)
     }
 
-    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Artigo> {
+    pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Artigo> {
         artigos
             .filter(artigos::id.eq(i))
-            .get_result(&mut conn)
+            .get_result(conn)
     }
 
 
-    pub fn find_documento(i: i32, mut conn: PgConnection) -> QueryResult<Vec<u8>> {
+    pub fn find_documento(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<u8>> {
         artigos
             .filter(artigos::id.eq(i))
             .select(artigos::documento)
-            .get_result(&mut conn)
+            .get_result(conn)
     }
 
-    pub fn insert(artigo: ArtigoComCategorias, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn insert(artigo: ArtigoComCategorias, conn: &mut PgConnection) -> QueryResult<usize> {
         let inserir_artigo = NewArtigo {
             titulo: artigo.titulo,
             resumo: artigo.resumo,
@@ -74,7 +74,7 @@ impl Artigo {
         let a_id = diesel::insert_into(artigos)
             .values(&inserir_artigo)
             .returning(artigos::id)
-            .get_result(&mut conn)
+            .get_result(conn)
             .expect("Erro ao inserir artigo");
 
         let a = artigo
@@ -89,9 +89,9 @@ impl Artigo {
         ArtigoCategorias::insert(a, conn)
     }
 
-    pub fn delete(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn delete(i: i32, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::delete(artigos)
             .filter(artigos::id.eq(i))
-            .execute(&mut conn)
+            .execute(conn)
     }
 }

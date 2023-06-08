@@ -43,33 +43,33 @@ pub struct EventoDtoDataFormatada {
 }
 
 impl Evento {
-    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Evento>>{
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Evento>>{
         eventos
-            .load(&mut conn)
+            .load(conn)
     }
 
-    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Evento> {
+    pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Evento> {
         eventos.filter(eventos::id.eq(i))
-            .get_result(&mut conn)
+            .get_result(conn)
     }
 
-    pub fn find_icone(i: i32, mut conn: PgConnection) -> QueryResult<Vec<u8>> {
+    pub fn find_icone(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<u8>> {
         eventos.filter(eventos::id.eq(i))
             .select(eventos::icone)
-            .get_result::<Vec<u8>>(&mut conn)
+            .get_result::<Vec<u8>>(conn)
     }
  
-    pub fn insert(new_evento: NewEvento, mut conn: PgConnection) -> QueryResult<i32> {
+    pub fn insert(new_evento: NewEvento, conn: &mut PgConnection) -> QueryResult<i32> {
         diesel::insert_into(eventos)
             .values(&new_evento)
             .returning(eventos::id)
-            .get_result::<i32>(&mut conn)
+            .get_result::<i32>(conn)
     }
 
-    pub fn update(i: i32, evento: NewEvento, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn update(i: i32, evento: NewEvento, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::update(eventos)
             .filter(eventos::id.eq(i))
             .set(&evento)
-            .execute(&mut conn)
+            .execute(conn)
     }
 }

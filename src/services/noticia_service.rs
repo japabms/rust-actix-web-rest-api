@@ -8,10 +8,10 @@ use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use std::io::Write;
 
+use diesel::PgConnection;
 use crate::{db::establish_connection, models::noticia::*};
 
-pub fn find_all() -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     let noticias = match Noticia::find_all(conn) {
         Ok(noticias) => noticias,
@@ -35,8 +35,7 @@ pub fn find_all() -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(noticias_formatado))
 }
 
-pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     let noticia = match Noticia::find_by_id(id, conn) {
         Ok(noticia) => noticia,
@@ -59,8 +58,7 @@ pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(noticia_formatado))
 }
 
-pub fn find_imagem(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_imagem(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Noticia::find_image(id, conn) {
         Ok(img) => Ok(HttpResponse::Ok().content_type("image/png").body(img)),
@@ -71,8 +69,7 @@ pub fn find_imagem(id: i32) -> Result<HttpResponse, Error> {
     }
 }
 
-pub fn find_noticia_recente() -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_noticia_recente(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Noticia::find_noticias_recente(conn) {
         Ok(noticias) => Ok(HttpResponse::Ok().json(noticias)),
@@ -80,9 +77,8 @@ pub fn find_noticia_recente() -> Result<HttpResponse, Error> {
     }
 }
 
-pub async fn insert(mut payload: Multipart) -> Result<HttpResponse, Error> {
+pub async fn insert(mut payload: Multipart, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
     let mut noticia = NewNoticia::default();
-    let conn = establish_connection();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();
@@ -129,11 +125,10 @@ pub async fn insert(mut payload: Multipart) -> Result<HttpResponse, Error> {
     }
 }
 
-pub async fn update(id: i32, mut payload: Multipart) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
-    let conn_2 = establish_connection();
+pub async fn update(id: i32, mut payload: Multipart, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
+    let mut conn_2 = establish_connection();
 
-    let _noticia = match Noticia::find_by_id(id, conn_2) {
+    let _noticia = match Noticia::find_by_id(id, &mut conn_2) {
         Ok(noticia) => noticia,
         Err(err) => return Err(ErrorNotFound(err)),
     };
@@ -199,8 +194,7 @@ pub async fn update(id: i32, mut payload: Multipart) -> Result<HttpResponse, Err
     }
 }
 
-pub fn delete(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn delete(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Noticia::delete_noticia(id, conn) {
         Ok(i) => {

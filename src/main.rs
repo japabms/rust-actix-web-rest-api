@@ -12,10 +12,9 @@ use controllers::{
     evento_controller::*, inscrito_controller::*, noticia_controller::*,
 };
 
-use env_logger;
 use actix_cors::Cors;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
-use db::{establish_connection, run_migrations};
+use db::{establish_connection, get_pool, run_migrations};
 
 use models::{artigo::*, atividade::*, categoria::*, curso::*, evento::*, inscrito::*, noticia::*};
 
@@ -102,14 +101,18 @@ async fn main() -> std::io::Result<()> {
     let mut conn = establish_connection();
     run_migrations(&mut conn).expect("Error");
 
-    HttpServer::new(|| {
+    let pool = web::Data::new(get_pool());
+
+    HttpServer::new(move || {
         App::new()
+            .app_data(pool.clone())
             .wrap(
                 Cors::default()
                     .allow_any_origin()
                     .allow_any_method()
                     .allow_any_header(),
             )
+            .wrap(actix_web::middleware::Logger::default())
             .service(get_inscritos)
             .service(get_inscrito_by_id)
             .service(get_inscrito_cursos)
@@ -150,7 +153,6 @@ async fn main() -> std::io::Result<()> {
                 "/home/victor/workspace/rust/cesc-api/openapi.json",
                 ApiDoc::openapi(),
             ))
-            .wrap(actix_web::middleware::Logger::default())
     })
     .bind(("0.0.0.0", 8080))? //0.0.0.0 binda o server em todas as interfaces de rede disponiveis
     .run()

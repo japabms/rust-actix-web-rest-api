@@ -36,28 +36,28 @@ pub struct NoticiaDTO {
 }
 
 impl Noticia {
-    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Noticia>> {
-        noticias.load(&mut conn)
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Noticia>> {
+        noticias.load(conn)
     }
 
-    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Noticia> {
-        noticias.filter(noticias::id.eq(i)).get_result(&mut conn)
+    pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Noticia> {
+        noticias.filter(noticias::id.eq(i)).get_result(conn)
     }
 
-    pub fn find_image(i: i32, mut conn: PgConnection) -> QueryResult<Vec<u8>> {
+    pub fn find_image(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<u8>> {
         noticias
             .filter(noticias::id.eq(i))
             .select(noticias::imagem)
-            .get_result(&mut conn)
+            .get_result(conn)
     }
-    pub fn insert(new_noticia: NewNoticia, mut conn: PgConnection) -> QueryResult<i32 >{
+    pub fn insert(new_noticia: NewNoticia, conn: &mut PgConnection) -> QueryResult<i32 >{
         diesel::insert_into(noticias)
             .values(&new_noticia)
             .returning(noticias::id)
-            .get_result::<i32>(&mut conn)
+            .get_result::<i32>(conn)
     }
 
-    pub fn update(i: i32, updated_noticia: NewNoticia, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn update(i: i32, updated_noticia: NewNoticia, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::update(noticias)
             .filter(noticias::id.eq(i))
             .set((
@@ -66,19 +66,19 @@ impl Noticia {
                 noticias::conteudo.eq(updated_noticia.conteudo),
                 noticias::imagem.eq(updated_noticia.imagem),
             ))
-            .execute(&mut conn)
+            .execute(conn)
     }
 
-    pub fn find_noticias_recente(mut conn: PgConnection) -> QueryResult<Vec<Noticia>> {
+    pub fn find_noticias_recente(conn: &mut PgConnection) -> QueryResult<Vec<Noticia>> {
         noticias
             .order(noticias::data.desc())
             .limit(5)
-            .load(&mut conn)
+            .load(conn)
     }
 
-    pub fn delete_noticia(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn delete_noticia(i: i32, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::delete(noticias)
             .filter(noticias::id.eq(i))
-            .execute(&mut conn)
+            .execute(conn)
     }
 }

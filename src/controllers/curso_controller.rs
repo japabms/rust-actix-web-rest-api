@@ -1,8 +1,11 @@
+use std::ops::DerefMut;
+
 use utoipa;
 use actix_web::{delete, get, post, put, web,  Responder};
 
 use crate::{
     models::curso::*, services::curso_service, 
+    db::DbPool
 };
 
 #[utoipa::path(
@@ -13,8 +16,8 @@ use crate::{
     ),
 )]
 #[get("/curso")]
-async fn get_cursos() -> impl Responder {
-    match curso_service::find_all() {
+async fn get_cursos(pool: web::Data<DbPool>) -> impl Responder {
+    match curso_service::find_all(pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into()
     }
@@ -28,8 +31,8 @@ async fn get_cursos() -> impl Responder {
     ),
 )]
 #[get("/curso/{id}")]
-async fn get_curso_by_id(id: web::Path<i32>) -> impl Responder {
-    match curso_service::find_by_id(id.into_inner()) {
+async fn get_curso_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    match curso_service::find_by_id(id.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into()
     }
@@ -44,8 +47,8 @@ async fn get_curso_by_id(id: web::Path<i32>) -> impl Responder {
     ),
 )]
 #[post("/curso")]
-async fn post_curso(json: web::Json<CursoDTO>) -> impl Responder {
-    match curso_service::insert(json.into_inner()) {
+async fn post_curso(json: web::Json<CursoDTO>, pool: web::Data<DbPool>) -> impl Responder {
+    match curso_service::insert(json.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into()
     }
@@ -60,8 +63,8 @@ async fn post_curso(json: web::Json<CursoDTO>) -> impl Responder {
     ),
 )]
 #[put("/curso/{id}")]
-async fn put_curso(id: web::Path<i32>, updated_curso: web::Json<CursoDTO>) -> impl Responder {
-    match curso_service::update(id.into_inner(), updated_curso.into_inner()) {
+async fn put_curso(id: web::Path<i32>, updated_curso: web::Json<CursoDTO>, pool: web::Data<DbPool>) -> impl Responder {
+    match curso_service::update(id.into_inner(), updated_curso.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into()
     }
@@ -75,8 +78,8 @@ async fn put_curso(id: web::Path<i32>, updated_curso: web::Json<CursoDTO>) -> im
     ),
 )]
 #[delete("/curso/{id}")]
-async fn delete_curso(id: web::Path<i32>) -> impl Responder {
-    match curso_service::delete(id.into_inner()) {
+async fn delete_curso(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    match curso_service::delete(id.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into()
     }

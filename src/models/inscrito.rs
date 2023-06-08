@@ -47,15 +47,15 @@ pub struct InscritoWithCursosDTO {
 
 
 impl Inscrito {
-    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Inscrito>> {
-       inscrito.load::<Inscrito>(&mut conn) 
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Inscrito>> {
+       inscrito.load::<Inscrito>(conn) 
     }
     
-    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Inscrito> {
-        inscrito.find(i).get_result::<Inscrito>(&mut conn)
+    pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Inscrito> {
+        inscrito.find(i).get_result::<Inscrito>(conn)
     }
 
-    pub fn insert(new_inscrito: InscritoWithCursosDTO, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn insert(new_inscrito: InscritoWithCursosDTO, conn: &mut PgConnection) -> QueryResult<usize> {
 
         //Inscrito a ser inserido
         let insert_inscrito = InscritoDTO { 
@@ -73,7 +73,7 @@ impl Inscrito {
         let inserted_inscrito_id: i32 = diesel::insert_into(inscrito::table)
             .values(&insert_inscrito)
             .returning(inscrito::id)
-            .get_result::<i32>(&mut conn)
+            .get_result::<i32>(conn)
             .expect("Erro ao realizar a inscrição");
         
         //Verificando se existe algum curso, e registrando no BD
@@ -89,9 +89,9 @@ impl Inscrito {
         }       
     }
     
-    pub fn delete(i: i32,mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn delete(i: i32,conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::delete(inscrito.find(i))
-            .execute(&mut conn)
+            .execute(conn)
     }
 
 }

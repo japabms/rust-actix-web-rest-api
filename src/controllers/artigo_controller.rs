@@ -1,13 +1,15 @@
+use std::ops::DerefMut;
+
 use actix_multipart::Multipart;
 use actix_web::{get, post, put, web, HttpResponse, Responder, delete};
 use diesel::IntoSql;
 
-use crate::{services::artigo_service, models::artigo::ArtigoComCategorias};
+use crate::{services::artigo_service, models::artigo::ArtigoComCategorias, db::DbPool};
 
 #[utoipa::path(tag = "Artigo")]
 #[get("/artigo")]
-async fn get_artigos() -> impl Responder {
-    match artigo_service::find_all() {
+async fn get_artigos(pool: web::Data<DbPool>) -> impl Responder {
+    match artigo_service::find_all(pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }
@@ -15,8 +17,8 @@ async fn get_artigos() -> impl Responder {
 
 #[utoipa::path(tag = "Artigo")]
 #[get("/artigo/{id}")]
-async fn get_artigo_by_id(id: web::Path<i32>) -> impl Responder {
-    match artigo_service::find_by_id(id.into_inner()) {
+async fn get_artigo_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    match artigo_service::find_by_id(id.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }
@@ -32,8 +34,8 @@ async fn get_artigo_by_id(id: web::Path<i32>) -> impl Responder {
     ),
 )]
 #[post("/artigo")]
-async fn post_artigo(payload: Multipart) -> impl Responder {
-    match artigo_service::insert(payload).await {
+async fn post_artigo(payload: Multipart, pool: web::Data<DbPool>) -> impl Responder {
+    match artigo_service::insert(payload, pool.get().unwrap().deref_mut()).await {
         Ok(()) => HttpResponse::Ok().body("Oi"),
         Err(res) => res.into(),
     }
@@ -41,8 +43,8 @@ async fn post_artigo(payload: Multipart) -> impl Responder {
 
 #[utoipa::path(tag = "Artigo")]
 #[get("/artigo/{id}/documento")]
-async fn get_artigo_documento(id: web::Path<i32>) -> impl Responder {
-    match artigo_service::find_artigo_documento(id.into_inner()) {
+async fn get_artigo_documento(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    match artigo_service::find_artigo_documento(id.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }
@@ -50,8 +52,8 @@ async fn get_artigo_documento(id: web::Path<i32>) -> impl Responder {
 
 #[utoipa::path(tag = "Artigo")]
 #[delete("/artigo/{id}")]
-async fn delete_artigo(id: web::Path<i32>) -> impl Responder {
-    match artigo_service::delete(id.into_inner()) {
+async fn delete_artigo(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    match artigo_service::delete(id.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }

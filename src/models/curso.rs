@@ -21,28 +21,28 @@ pub struct CursoDTO {
 }
 
 impl Curso {
-    pub fn find_all(mut conn: PgConnection) -> QueryResult<Vec<Curso>> {
-        curso.load::<Curso>(&mut conn)
+    pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Curso>> {
+        curso.load::<Curso>(conn)
     }
 
-    pub fn find_by_id(i: i32, mut conn: PgConnection) -> QueryResult<Curso> {
-        curso.find(i).get_result::<Curso>(&mut conn)
+    pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Curso> {
+        curso.find(i).get_result::<Curso>(conn)
     }
 
-    pub fn insert(new_curso: CursoDTO, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn insert(new_curso: CursoDTO, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::insert_into(curso)
             .values(&new_curso)
-            .execute(&mut conn)
+            .execute(conn)
     }
 
-    pub fn update(i: i32, edited_curso: CursoDTO, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn update(i: i32, edited_curso: CursoDTO, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::update(curso::table)
             .filter(curso::id.eq(i))
             .set(&edited_curso)
-            .execute(&mut conn)
+            .execute(conn)
     }
 
-    pub fn delete(i: i32, mut conn: PgConnection) -> QueryResult<usize> {
-        diesel::delete(curso.find(i)).execute(&mut conn)
+    pub fn delete(i: i32, conn: &mut PgConnection) -> QueryResult<usize> {
+        diesel::delete(curso.find(i)).execute(conn)
     }
 }

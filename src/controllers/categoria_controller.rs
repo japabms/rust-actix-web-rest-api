@@ -1,7 +1,8 @@
+use std::ops::DerefMut;
+
 use actix_web::{delete, get, post, web, Responder};
 
-use crate::models::categoria::NewCategoria;
-use crate::services::categoria_service;
+use crate::{db::DbPool, models::categoria::NewCategoria, services::categoria_service};
 
 #[utoipa::path(
     tag = "Categoria",
@@ -11,8 +12,8 @@ use crate::services::categoria_service;
     ),
 )]
 #[get("/categoria")]
-async fn get_categoria() -> impl Responder {
-    match categoria_service::find_all() {
+async fn get_categoria(pool: web::Data<DbPool>) -> impl Responder {
+    match categoria_service::find_all(pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }
@@ -27,8 +28,8 @@ async fn get_categoria() -> impl Responder {
     ),
 )]
 #[post("/categoria")]
-async fn post_categoria(json: web::Json<NewCategoria>) -> impl Responder {
-    match categoria_service::insert(json.into_inner()) {
+async fn post_categoria(json: web::Json<NewCategoria>, pool: web::Data<DbPool>) -> impl Responder {
+    match categoria_service::insert(json.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }
@@ -42,8 +43,8 @@ async fn post_categoria(json: web::Json<NewCategoria>) -> impl Responder {
     ),
 )]
 #[delete("/categoria/{id}")]
-async fn delete_categoria(id: web::Path<i32>) -> impl Responder {
-    match categoria_service::delete(id.into_inner()) {
+async fn delete_categoria(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    match categoria_service::delete(id.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
     }

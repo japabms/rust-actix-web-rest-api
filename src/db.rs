@@ -1,10 +1,13 @@
 use diesel::{
     prelude::*,
     sql_query, pg::Pg, 
+    r2d2::{Pool, ConnectionManager}
 };
 use diesel_migrations::{self, embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use std::{env, error::Error};
+
+pub type DbPool = diesel::r2d2::Pool<ConnectionManager<PgConnection>>;
 
 pub const MIGRATION: EmbeddedMigrations = embed_migrations!();
 
@@ -13,6 +16,16 @@ pub fn run_migrations(conn: &mut impl MigrationHarness<Pg>) -> Result<(), Box<dy
 
     conn.run_pending_migrations(MIGRATION)?;
     Ok(())
+}
+
+pub fn get_pool() -> DbPool {
+    dotenv().ok();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
+
+    Pool::builder().max_size(10).build(manager).expect("Erro ao criar pool")
 }
 
 pub fn establish_connection() -> PgConnection {

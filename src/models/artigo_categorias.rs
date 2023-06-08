@@ -25,9 +25,9 @@ pub struct ArtigoCategorias {
 }
 
 impl ArtigoCategorias {
-    pub fn insert(ins_categorias: Vec<ArtigoCategorias>, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn insert(ins_categorias: Vec<ArtigoCategorias>, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::insert_into(artigo_categorias)
             .values(&ins_categorias)
-            .execute(&mut conn)
+            .execute(conn)
     }
 }

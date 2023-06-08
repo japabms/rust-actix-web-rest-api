@@ -28,21 +28,21 @@ pub struct InscritoCurso {
 }
 
 impl InscritoCurso {
-    pub fn insert(ins_cursos: Vec<InscritoCurso>, mut conn: PgConnection) -> QueryResult<usize> {
+    pub fn insert(ins_cursos: Vec<InscritoCurso>, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::insert_into(inscrito_cursos::table)
             .values(&ins_cursos)
-            .execute(&mut conn)
+            .execute(conn)
     }
 
-    pub fn find_inscrito_cursos(i: i32, mut conn: PgConnection) -> QueryResult<Vec<Curso>> {
+    pub fn find_inscrito_cursos(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<Curso>> {
         let inscrito = inscrito::table
             .filter(inscrito::id.eq(i))
             .select(Inscrito::as_select())
-            .get_result(&mut conn);
+            .get_result(conn);
 
         InscritoCurso::belonging_to(&inscrito?)
             .inner_join(curso::table)
             .select(Curso::as_select())
-            .load(&mut conn)
+            .load(conn)
     }
 }

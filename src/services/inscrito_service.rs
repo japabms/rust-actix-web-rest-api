@@ -1,5 +1,6 @@
 use actix_web::{error::{Error,ErrorBadRequest,  ErrorNotFound}, HttpResponse};
 
+use diesel::PgConnection;
 use crate::{
     models::{
         inscrito::*,
@@ -8,8 +9,7 @@ use crate::{
     db::establish_connection
 };
 
-pub fn find_all() -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_all(conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Inscrito::find_all(conn) {
         Ok(inscrito) => Ok(HttpResponse::Ok().json(inscrito)),
@@ -20,8 +20,7 @@ pub fn find_all() -> Result<HttpResponse, Error> {
     }
 }
 
-pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_by_id(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
     
     match Inscrito::find_by_id(id, conn) {
         Ok(inscrito) => Ok(HttpResponse::Ok().json(inscrito)),
@@ -29,8 +28,7 @@ pub fn find_by_id(id: i32) -> Result<HttpResponse, Error> {
     }
 }
 
-pub fn find_inscrito_cursos(id: i32) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn find_inscrito_cursos(id: i32, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match InscritoCurso::find_inscrito_cursos(id, conn) {
         Ok(cursos) => Ok(HttpResponse::Ok().json(cursos)),
@@ -38,8 +36,7 @@ pub fn find_inscrito_cursos(id: i32) -> Result<HttpResponse, Error> {
     }
 }
 
-pub fn insert(inscrito: InscritoWithCursosDTO) -> Result<HttpResponse, Error> {
-    let conn = establish_connection();
+pub fn insert(inscrito: InscritoWithCursosDTO, conn:  &mut PgConnection) -> Result<HttpResponse, Error> {
 
     match Inscrito::insert(inscrito, conn) {
         Ok(num) => Ok(HttpResponse::Ok().body(format!("Inscrito ID: {}", num))),
