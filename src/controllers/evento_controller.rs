@@ -59,3 +59,11 @@ async fn get_eventos(pool: web::Data<DbPool>) -> impl Responder {
         Err(err) => err.into(),
     }
 }
+
+pub fn init_evento_routes(config: &mut web::ServiceConfig) {
+    config.service(get_eventos)
+        .service(get_evento_by_id)
+        .service(post_evento)
+        .service(put_evento)
+        .service(get_evento_icone);
+}

@@ -57,3 +57,11 @@ async fn delete_artigo(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Resp
         Err(err) => err.into(),
     }
 }
+
+pub fn init_artigo_routes(config: &mut web::ServiceConfig) {
+    config.service(post_artigo)
+        .service(get_artigos)
+        .service(get_artigo_documento)
+        .service(get_artigo_by_id)
+        .service(delete_artigo);
+}

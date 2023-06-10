@@ -198,7 +198,7 @@
         "tags": [
           "Categoria"
         ],
-        "operationId": "get_categoria",
+        "operationId": "get_categorias",
         "responses": {
           "200": {
             "description": "Categorias pega com sucesso.",

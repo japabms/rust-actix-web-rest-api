@@ -12,7 +12,7 @@ use crate::{db::DbPool, models::categoria::NewCategoria, services::categoria_ser
     ),
 )]
 #[get("/categoria")]
-async fn get_categoria(pool: web::Data<DbPool>) -> impl Responder {
+async fn get_categorias(pool: web::Data<DbPool>) -> impl Responder {
     match categoria_service::find_all(pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
@@ -48,4 +48,10 @@ async fn delete_categoria(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
         Ok(res) => res,
         Err(err) => err.into(),
     }
+}
+
+pub fn init_categoria_routes(config: &mut web::ServiceConfig) {
+    config.service(get_categorias)
+        .service(post_categoria)
+        .service(delete_categoria);
 }

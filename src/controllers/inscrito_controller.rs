@@ -45,3 +45,10 @@ async fn post_inscrito(
         Err(err) => err.into(),
     }
 }
+
+pub fn init_inscrito_routes(config: &mut web::ServiceConfig) {
+    config.service(get_inscritos)
+        .service(get_inscrito_by_id)
+        .service(get_inscrito_cursos)
+        .service(post_inscrito);
+}

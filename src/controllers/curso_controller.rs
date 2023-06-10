@@ -89,3 +89,11 @@ async fn delete_curso(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Respo
         Err(err) => err.into(),
     }
 }
+
+pub fn init_curso_routes(config: &mut web::ServiceConfig) {
+    config.service(get_cursos)
+        .service(get_curso_by_id)
+        .service(post_curso)
+        .service(put_curso)
+        .service(delete_curso);
+}

@@ -62,3 +62,11 @@ async fn delete_atividade(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
         Err(err) => err.into(),
     }
 }
+
+pub fn init_atividade_routes(config: &mut web::ServiceConfig) {
+    config.service(get_atividades)
+        .service(get_atividade_by_id)
+        .service(post_atividade)
+        .service(put_atividade)
+        .service(delete_atividade);
+}

@@ -77,3 +77,13 @@ async fn delete_noticia(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Res
         Err(err) => err.into(),
     }
 }
+
+pub fn init_noticia_routes(config: &mut web::ServiceConfig) {
+    config.service(get_noticias)
+        .service(get_noticia_by_id)
+        .service(get_noticia_imagem)
+        .service(get_noticias_recentes)
+        .service(post_noticia)
+        .service(put_noticia)
+        .service(delete_noticia);
+}
