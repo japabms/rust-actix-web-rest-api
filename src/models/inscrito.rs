@@ -48,7 +48,7 @@ pub struct InscritoWithCursosDTO {
 
 impl Inscrito {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Inscrito>> {
-        inscrito.load::<Inscrito>(conn)
+        inscrito.order_by(inscrito::id).load::<Inscrito>(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Inscrito> {

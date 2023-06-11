@@ -39,7 +39,7 @@ pub struct AtividadeDtoDataFormatada {
 
 impl Atividade {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Atividade>> {
-        atividades.load(conn)
+        atividades.order_by(atividades::id).load(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Atividade> {

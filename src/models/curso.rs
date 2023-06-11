@@ -24,7 +24,7 @@ pub struct CursoDTO {
 
 impl Curso {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Curso>> {
-        curso.load::<Curso>(conn)
+        curso.order_by(curso::id).load::<Curso>(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Curso> {

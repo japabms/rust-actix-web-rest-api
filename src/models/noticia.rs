@@ -39,7 +39,7 @@ pub struct NoticiaDTO {
 
 impl Noticia {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Noticia>> {
-        noticias.load(conn)
+        noticias.order_by(noticias::id).load(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Noticia> {

@@ -46,7 +46,7 @@ pub struct EventoDtoDataFormatada {
 
 impl Evento {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Evento>> {
-        eventos.load(conn)
+        eventos.order_by(eventos::id).load(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Evento> {

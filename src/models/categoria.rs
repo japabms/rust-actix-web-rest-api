@@ -17,7 +17,7 @@ pub struct NewCategoria {
 
 impl Categoria {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Categoria>> {
-        categorias.load(conn)
+        categorias.order_by(categorias::id).load(conn)
     }
 
     pub fn insert(new_categoria: NewCategoria, conn: &mut PgConnection) -> QueryResult<usize> {

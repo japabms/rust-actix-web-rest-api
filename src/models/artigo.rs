@@ -42,7 +42,7 @@ pub struct ArtigoDTO {
 
 impl Artigo {
     pub fn find_all(conn: &mut PgConnection) -> QueryResult<Vec<Artigo>> {
-        artigos.load(conn)
+        artigos.order_by(artigos::id).load(conn)
     }
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Artigo> {
