@@ -75,13 +75,13 @@ pub fn update_api_docs() -> Result<(), std::io::Error> {
 }
 
 pub fn get_open_api_json_path() -> Result<String, std::io::Error> {
-    let current_path = match env::current_dir()?.to_str() {
-        Some(path) => path.to_owned(),
-        None => {
-            return Err(std::io::Error::new(std::io::ErrorKind::Other, "Erro ao converter o diretoria para str"));
+     match env::current_dir()?.to_str() {
+        Some(path) => {
+            let path_to_open_api_docs = format!("{}/{}", path.to_owned(), "openapi.json");
+            Ok(path_to_open_api_docs)
         }
-    };
-    let path_to_open_api_docs = format!("{}/{}", current_path, "openapi.json");
-    
-    Ok(path_to_open_api_docs)
+        None => {
+            Err(std::io::Error::new(std::io::ErrorKind::Other, "Erro ao converter o diretoria para str"))
+        }
+    }
 }
