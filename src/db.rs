@@ -2,8 +2,8 @@ use diesel::{
     pg::Pg,
     prelude::*,
     r2d2::{ConnectionManager, Pool},
-    sql_query,
 };
+
 use diesel_migrations::{self, embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use std::{env, error::Error};
@@ -42,16 +42,3 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Erro ao conectar a {database_url}"))
 }
 
-//testing some things
-pub fn reset_serial(
-    table_name: &str,
-    column_name: &str,
-    mut conn: PgConnection,
-) -> QueryResult<()> {
-    let query = format!(
-        "ALTER SEQUENCE {} RESTART WITH 1",
-        format!("{}_{}_seq", table_name, column_name)
-    );
-    sql_query(query).execute(&mut conn)?;
-    Ok(())
-}
