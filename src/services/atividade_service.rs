@@ -17,10 +17,10 @@ pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
         }
     };
 
-    let mut atividades_formatada: Vec<AtividadeDtoDataFormatada> = Vec::new();
+    let mut atividades_formatada: Vec<AtivdadeDTO> = Vec::new();
 
     for atividade in atividades.iter_mut() {
-        let atividade_formatada = AtividadeDtoDataFormatada {
+        let atividade_formatada = AtivdadeDTO {
             id: atividade.id,
             titulo: atividade.titulo.clone(),
             descricao: atividade.descricao.clone(),
@@ -45,7 +45,7 @@ pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Erro
         }
     };
 
-    let atividade_formatada = AtividadeDtoDataFormatada {
+    let atividade_formatada = AtivdadeDTO {
         id: atividade.id,
         titulo: atividade.titulo.clone(),
         descricao: atividade.descricao.clone(),
@@ -57,7 +57,7 @@ pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Erro
     Ok(HttpResponse::Ok().json(atividade_formatada))
 }
 
-pub fn insert(atividade: AtividadeDTO, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
+pub fn insert(atividade: NewAtividade, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Atividade::insert(atividade, conn) {
         Ok(id) => Ok(HttpResponse::Ok().body(format!("Atividade com o id {} foi inserida", id))),
         Err(err) => Err(ErrorBadRequest(format!(
@@ -69,7 +69,7 @@ pub fn insert(atividade: AtividadeDTO, conn: &mut PgConnection) -> Result<HttpRe
 
 pub fn update(
     id: i32,
-    atividade: AtividadeDTO,
+    atividade: NewAtividade,
     conn: &mut PgConnection,
 ) -> Result<HttpResponse, Error> {
     match Atividade::update(id, atividade, conn) {

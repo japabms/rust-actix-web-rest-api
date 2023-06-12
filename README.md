@@ -9,12 +9,11 @@ Backend para um site de um evento, que aceite cadastro, submissão de artigo, et
 
 ## Como usar
 
-- Atualizar o DATABASE_URL no arquivo .env
+- Atualizar o DATABASE_URL no arquivo .env e as tabelas serão criada automaticamente quando o programa for executado.
 - Buildar o projeto com `cargo build --release` ou rodar com `cargo run --release`
 
 ## API's 
 
 ### TODO!
-- Ajeitar a documentação no swagger
-- Adicionar mais metodos para o artigo
+- Ajeitar a documentação do swagger
 

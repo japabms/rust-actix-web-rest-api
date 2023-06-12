@@ -34,7 +34,7 @@ pub struct NewEvento {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct EventoDtoDataFormatada {
+pub struct EventoDTO {
     pub id: i32,
     pub titulo: String,
     pub sobre: String,

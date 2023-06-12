@@ -20,7 +20,7 @@ pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Erro
     }
 }
 
-pub fn insert(curso: CursoDTO, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
+pub fn insert(curso: NewCurso, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::insert(curso, conn) {
         Ok(_) => Ok(HttpResponse::NoContent().finish()),
         Err(err) => Err(ErrorBadRequest(format!(
@@ -30,7 +30,7 @@ pub fn insert(curso: CursoDTO, conn: &mut PgConnection) -> Result<HttpResponse, 
     }
 }
 
-pub fn update(id: i32, curso: CursoDTO, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
+pub fn update(id: i32, curso: NewCurso, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
     match Curso::update(id, curso, conn) {
         Ok(i) => {
             if i == 0 {

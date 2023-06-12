@@ -24,7 +24,7 @@ pub struct NewArtigo {
 }
 
 #[derive(Serialize, Deserialize, Default, IntoParams, ToSchema)]
-pub struct ArtigoComCategorias {
+pub struct ArtigoInput {
     pub titulo: String,
     pub resumo: String,
     pub palavra_chave: String,
@@ -56,7 +56,7 @@ impl Artigo {
             .get_result(conn)
     }
 
-    pub fn insert(artigo: ArtigoComCategorias, conn: &mut PgConnection) -> QueryResult<usize> {
+    pub fn insert(artigo: ArtigoInput, conn: &mut PgConnection) -> QueryResult<usize> {
         let inserir_artigo = NewArtigo {
             titulo: artigo.titulo,
             resumo: artigo.resumo,

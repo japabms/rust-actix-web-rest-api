@@ -27,7 +27,7 @@ async fn get_atividade_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> imp
     request_body = AtividadeDTO,
 )]
 #[post("/atividade")]
-async fn post_atividade(json: web::Json<AtividadeDTO>, pool: web::Data<DbPool>) -> impl Responder {
+async fn post_atividade(json: web::Json<NewAtividade>, pool: web::Data<DbPool>) -> impl Responder {
     match atividade_service::insert(json.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
@@ -41,7 +41,7 @@ async fn post_atividade(json: web::Json<AtividadeDTO>, pool: web::Data<DbPool>) 
 #[put("/atividade/{id}")]
 async fn put_atividade(
     id: web::Path<i32>,
-    json: web::Json<AtividadeDTO>,
+    json: web::Json<NewAtividade>,
     pool: web::Data<DbPool>,
 ) -> impl Responder {
     match atividade_service::update(

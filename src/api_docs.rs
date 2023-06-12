@@ -7,7 +7,9 @@ use crate::controllers::{
     evento_controller::*, inscrito_controller::*, noticia_controller::*,
 };
 
-use crate::models::{artigo::*, atividade::*, categoria::*, curso::*, evento::*, inscrito::*, noticia::*};
+use crate::models::{
+    artigo::*, atividade::*, categoria::*, curso::*, evento::*, inscrito::*, noticia::*,
+};
 
 use utoipa::OpenApi;
 
@@ -52,36 +54,36 @@ use utoipa::OpenApi;
     ),
     components(schemas(
         Curso,
-        CursoDTO,
+        NewCurso,
         Categoria,
         NewCategoria,
         Artigo,
-        ArtigoComCategorias,
+        ArtigoInput,
         Atividade,
-        AtividadeDTO,
+        NewAtividade,
         Evento,
         NewEvento,
-        InscritoWithCursosDTO,
+        InscritoInput,
         NewNoticia,
     ))
 )]
 pub struct ApiDoc;
 
 pub fn update_api_docs() -> Result<(), std::io::Error> {
-
     let mut openapi_json: File = File::create("openapi.json")?;
     openapi_json.write_all(ApiDoc::openapi().to_pretty_json().unwrap().as_bytes())?;
     Ok(())
 }
 
 pub fn get_open_api_json_path() -> Result<String, std::io::Error> {
-     match env::current_dir()?.to_str() {
+    match env::current_dir()?.to_str() {
         Some(path) => {
             let path_to_open_api_docs = format!("{}/{}", path.to_owned(), "openapi.json");
             Ok(path_to_open_api_docs)
         }
-        None => {
-            Err(std::io::Error::new(std::io::ErrorKind::Other, "Erro ao converter o diretoria para str"))
-        }
+        None => Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Erro ao converter o diretoria para str",
+        )),
     }
 }

@@ -16,10 +16,10 @@ pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
         Err(err) => return Err(ErrorInternalServerError(err)),
     };
 
-    let mut eventos_formatado: Vec<EventoDtoDataFormatada> = Vec::new();
+    let mut eventos_formatado: Vec<EventoDTO> = Vec::new();
 
     for evento in eventos.iter() {
-        let evento_formatado = EventoDtoDataFormatada {
+        let evento_formatado = EventoDTO {
             id: evento.id,
             titulo: evento.titulo.clone(),
             sobre: evento.sobre.clone(),
@@ -40,7 +40,7 @@ pub fn find_by_id(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Erro
         Err(err) => return Err(ErrorNotFound(err)),
     };
 
-    let evento_formatado = EventoDtoDataFormatada {
+    let evento_formatado = EventoDTO {
         id: evento.id,
         titulo: evento.titulo.clone(),
         sobre: evento.sobre.clone(),

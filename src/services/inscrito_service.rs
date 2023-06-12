@@ -37,7 +37,7 @@ pub fn find_inscrito_cursos(id: i32, conn: &mut PgConnection) -> Result<HttpResp
 }
 
 pub fn insert(
-    inscrito: InscritoWithCursosDTO,
+    inscrito: InscritoInput,
     conn: &mut PgConnection,
 ) -> Result<HttpResponse, Error> {
     match Inscrito::insert(inscrito, conn) {

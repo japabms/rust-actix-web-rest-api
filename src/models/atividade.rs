@@ -19,7 +19,7 @@ pub struct Atividade {
 
 #[derive(ToSchema, Queryable, Selectable, AsChangeset, Insertable, Serialize, Deserialize)]
 #[diesel(table_name = atividades)]
-pub struct AtividadeDTO {
+pub struct NewAtividade {
     pub titulo: String,
     pub descricao: String,
     pub responsavel: String,
@@ -28,7 +28,7 @@ pub struct AtividadeDTO {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct AtividadeDtoDataFormatada {
+pub struct AtivdadeDTO {
     pub id: i32,
     pub titulo: String,
     pub descricao: String,
@@ -46,14 +46,14 @@ impl Atividade {
         atividades.filter(atividades::id.eq(i)).get_result(conn)
     }
 
-    pub fn insert(new_atividade: AtividadeDTO, conn: &mut PgConnection) -> QueryResult<i32> {
+    pub fn insert(new_atividade: NewAtividade, conn: &mut PgConnection) -> QueryResult<i32> {
         diesel::insert_into(atividades)
             .values(&new_atividade)
             .returning(atividades::id)
             .get_result(conn)
     }
 
-    pub fn update(i: i32, atividade: AtividadeDTO, conn: &mut PgConnection) -> QueryResult<usize> {
+    pub fn update(i: i32, atividade: NewAtividade, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::update(atividades)
             .filter(atividades::id.eq(i))
             .set(&atividade)

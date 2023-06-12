@@ -17,7 +17,7 @@ pub struct Curso {
 
 #[derive(Insertable, AsChangeset, Serialize, Deserialize, Clone, ToSchema)]
 #[diesel(table_name = curso)]
-pub struct CursoDTO {
+pub struct NewCurso {
     pub nome: String,
     pub preco: i32,
 }
@@ -31,11 +31,11 @@ impl Curso {
         curso.find(i).get_result::<Curso>(conn)
     }
 
-    pub fn insert(new_curso: CursoDTO, conn: &mut PgConnection) -> QueryResult<usize> {
+    pub fn insert(new_curso: NewCurso, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::insert_into(curso).values(&new_curso).execute(conn)
     }
 
-    pub fn update(i: i32, edited_curso: CursoDTO, conn: &mut PgConnection) -> QueryResult<usize> {
+    pub fn update(i: i32, edited_curso: NewCurso, conn: &mut PgConnection) -> QueryResult<usize> {
         diesel::update(curso::table)
             .filter(curso::id.eq(i))
             .set(&edited_curso)

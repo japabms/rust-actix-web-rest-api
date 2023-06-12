@@ -33,11 +33,11 @@ async fn get_inscrito_cursos(id: web::Path<i32>, pool: web::Data<DbPool>) -> imp
 
 #[utoipa::path(
     tag = "Inscrito",
-    request_body = InscritoWithCursosDTO
+    request_body = InscritoInput
 )]
 #[post("/inscrever")]
 async fn post_inscrito(
-    json: web::Json<InscritoWithCursosDTO>,
+    json: web::Json<InscritoInput>,
     pool: web::Data<DbPool>,
 ) -> impl Responder {
     match inscrito_service::insert(json.into_inner(), pool.get().unwrap().deref_mut()) {

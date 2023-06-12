@@ -44,7 +44,7 @@ async fn get_curso_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Re
     ),
 )]
 #[post("/curso")]
-async fn post_curso(json: web::Json<CursoDTO>, pool: web::Data<DbPool>) -> impl Responder {
+async fn post_curso(json: web::Json<NewCurso>, pool: web::Data<DbPool>) -> impl Responder {
     match curso_service::insert(json.into_inner(), pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
         Err(err) => err.into(),
@@ -62,7 +62,7 @@ async fn post_curso(json: web::Json<CursoDTO>, pool: web::Data<DbPool>) -> impl 
 #[put("/curso/{id}")]
 async fn put_curso(
     id: web::Path<i32>,
-    updated_curso: web::Json<CursoDTO>,
+    updated_curso: web::Json<NewCurso>,
     pool: web::Data<DbPool>,
 ) -> impl Responder {
     match curso_service::update(

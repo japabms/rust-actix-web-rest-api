@@ -24,7 +24,7 @@ pub struct Inscrito {
 
 #[derive(Insertable, Serialize, Deserialize)]
 #[diesel(table_name = inscrito)]
-pub struct InscritoDTO {
+pub struct NewInscrito {
     pub nome: String,
     pub nome_cracha: String,
     pub email: String,
@@ -35,7 +35,7 @@ pub struct InscritoDTO {
 }
 
 #[derive(ToSchema, Serialize, Deserialize, Clone)]
-pub struct InscritoWithCursosDTO {
+pub struct InscritoInput {
     pub nome: String,
     pub nome_cracha: String,
     pub email: String,
@@ -56,11 +56,11 @@ impl Inscrito {
     }
 
     pub fn insert(
-        new_inscrito: InscritoWithCursosDTO,
+        new_inscrito: InscritoInput,
         conn: &mut PgConnection,
     ) -> QueryResult<usize> {
         //Inscrito a ser inserido
-        let insert_inscrito = InscritoDTO {
+        let insert_inscrito = NewInscrito {
             nome: new_inscrito.nome,
             nome_cracha: new_inscrito.nome_cracha,
             email: new_inscrito.email,

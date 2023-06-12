@@ -4,7 +4,7 @@ use actix_multipart::Multipart;
 use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
 use diesel::IntoSql;
 
-use crate::{db::DbPool, models::artigo::ArtigoComCategorias, services::artigo_service};
+use crate::{db::DbPool, models::artigo::ArtigoInput, services::artigo_service};
 
 #[utoipa::path(tag = "Artigo")]
 #[get("/artigo")]
@@ -26,7 +26,7 @@ async fn get_artigo_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
 
 #[utoipa::path(
     tag = "Artigo",
-    request_body(content = ArtigoComCategorias, description = "Artigo to store the database", content_type = "multipart/form-data"),
+    request_body(content = ArtigoInput, description = "Artigo to store the database", content_type = "multipart/form-data"),
     responses (
         (status = 200, description = "Artigo postado com sucesso.",),
         (status = NOT_FOUND)

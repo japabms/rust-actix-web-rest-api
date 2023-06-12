@@ -1,19 +1,16 @@
+pub mod api_docs;
 #[allow(unused_imports, unused_variables)]
 pub mod controllers;
 pub mod db;
 pub mod models;
 pub mod schema;
 pub mod services;
-pub mod api_docs;
-
-
 
 use api_docs::get_open_api_json_path;
 use controllers::{
     artigo_controller::*, atividade_controller::*, categoria_controller::*, curso_controller::*,
     evento_controller::*, inscrito_controller::*, noticia_controller::*,
 };
-
 
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
@@ -22,21 +19,15 @@ use db::{establish_connection, get_pool, run_migrations};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-use api_docs::ApiDoc;
 use api_docs::update_api_docs;
+use api_docs::ApiDoc;
 
-//TODO!:
-// Testar se as migrações funciona kekw
-
-
-//Ignorar
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     //loading api definition
-    //i dont know if it works for windows.
+    //this propably dont work on windows.
     let swagger_docs = get_open_api_json_path()?;
     update_api_docs()?;
 
@@ -53,10 +44,9 @@ async fn main() -> std::io::Result<()> {
                 Cors::default()
                     .allow_any_origin()
                     .allow_any_method()
-                    .allow_any_header()
+                    .allow_any_header(),
             )
             .wrap(actix_web::middleware::Logger::default())
-
             .configure(init_artigo_routes)
             .configure(init_categoria_routes)
             .configure(init_curso_routes)
@@ -64,13 +54,11 @@ async fn main() -> std::io::Result<()> {
             .configure(init_evento_routes)
             .configure(init_inscrito_routes)
             .configure(init_noticia_routes)
-
-            .service(SwaggerUi::new("/swagger-ui/{_:.*}").url(
-                swagger_docs.clone(),
-                ApiDoc::openapi(),
-            ))
+            .service(
+                SwaggerUi::new("/swagger-ui/{_:.*}").url(swagger_docs.clone(), ApiDoc::openapi()),
+            )
     })
-    .bind(("0.0.0.0", 8080))? //0.0.0.0 binda o server em todas as interfaces de rede disponiveis
+    .bind(("0.0.0.0", 8080))? //0.0.0.0 to deploy
     .run()
     .await
 }

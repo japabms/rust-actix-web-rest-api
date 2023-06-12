@@ -10,7 +10,7 @@ use futures_util::TryStreamExt as _;
 use std::io::Write;
 
 pub async fn insert(mut payload: Multipart, conn: &mut PgConnection) -> Result<(), Error> {
-    let mut artigo = ArtigoComCategorias::default();
+    let mut artigo = ArtigoInput::default();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();
