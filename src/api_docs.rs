@@ -1,3 +1,4 @@
+use std::env;
 use std::fs::File;
 use std::io::Write;
 
@@ -71,4 +72,16 @@ pub fn update_api_docs() -> Result<(), std::io::Error> {
     let mut openapi_json: File = File::create("openapi.json")?;
     openapi_json.write_all(ApiDoc::openapi().to_pretty_json().unwrap().as_bytes())?;
     Ok(())
+}
+
+pub fn get_open_api_json_path() -> Result<String, std::io::Error> {
+    let current_path = match env::current_dir()?.to_str() {
+        Some(path) => path.to_owned(),
+        None => {
+            return Err(std::io::Error::new(std::io::ErrorKind::Other, "Erro ao converter o diretoria para str"));
+        }
+    };
+    let path_to_open_api_docs = format!("{}/{}", current_path, "openapi.json");
+    
+    Ok(path_to_open_api_docs)
 }
