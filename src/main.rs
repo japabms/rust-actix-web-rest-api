@@ -42,7 +42,7 @@ async fn main() -> std::io::Result<()> {
 
     // rodando as migrações
     let mut conn = establish_connection();
-    run_migrations(&mut conn).expect("Error");
+    run_migrations(&mut conn).expect("Erro ao rodar migrações");
 
     let pool = web::Data::new(get_pool());
 
