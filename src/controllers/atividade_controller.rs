@@ -24,7 +24,7 @@ async fn get_atividade_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> imp
 
 #[utoipa::path(
     tag = "Atividade",
-    request_body = AtividadeDTO,
+    request_body = NewAtividade,
 )]
 #[post("/atividade")]
 async fn post_atividade(json: web::Json<NewAtividade>, pool: web::Data<DbPool>) -> impl Responder {
@@ -36,7 +36,7 @@ async fn post_atividade(json: web::Json<NewAtividade>, pool: web::Data<DbPool>) 
 
 #[utoipa::path(
     tag = "Atividade",
-    request_body = AtividadeDTO,
+    request_body = NewAtividade,
 )]
 #[put("/atividade/{id}")]
 async fn put_atividade(
@@ -64,7 +64,8 @@ async fn delete_atividade(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
 }
 
 pub fn init_atividade_routes(config: &mut web::ServiceConfig) {
-    config.service(get_atividades)
+    config
+        .service(get_atividades)
         .service(get_atividade_by_id)
         .service(post_atividade)
         .service(put_atividade)

@@ -6,7 +6,9 @@ use diesel::IntoSql;
 
 use crate::{db::DbPool, models::artigo::ArtigoInput, services::artigo_service};
 
-#[utoipa::path(tag = "Artigo")]
+#[utoipa::path(tag = "Artigo", responses(
+    (status = 200, body = ArtigoDTO)
+))]
 #[get("/artigo")]
 async fn get_artigos(pool: web::Data<DbPool>) -> impl Responder {
     match artigo_service::find_all(pool.get().unwrap().deref_mut()) {
@@ -15,7 +17,9 @@ async fn get_artigos(pool: web::Data<DbPool>) -> impl Responder {
     }
 }
 
-#[utoipa::path(tag = "Artigo")]
+#[utoipa::path(tag = "Artigo", responses(
+    (status = 200, body = ArtigoDTO))
+)]
 #[get("/artigo/{id}")]
 async fn get_artigo_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
     match artigo_service::find_by_id(id.into_inner(), pool.get().unwrap().deref_mut()) {
@@ -28,8 +32,7 @@ async fn get_artigo_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
     tag = "Artigo",
     request_body(content = ArtigoInput, description = "Artigo to store the database", content_type = "multipart/form-data"),
     responses (
-        (status = 200, description = "Artigo postado com sucesso.",),
-        (status = NOT_FOUND)
+        (status = 200, description = "Artigo postado com sucesso."),
     ),
 )]
 #[post("/artigo")]
@@ -59,7 +62,8 @@ async fn delete_artigo(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Resp
 }
 
 pub fn init_artigo_routes(config: &mut web::ServiceConfig) {
-    config.service(post_artigo)
+    config
+        .service(post_artigo)
         .service(get_artigos)
         .service(get_artigo_documento)
         .service(get_artigo_by_id)

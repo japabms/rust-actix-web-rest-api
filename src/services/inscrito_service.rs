@@ -41,7 +41,7 @@ pub fn insert(
     conn: &mut PgConnection,
 ) -> Result<HttpResponse, Error> {
     match Inscrito::insert(inscrito, conn) {
-        Ok(num) => Ok(HttpResponse::Ok().body(format!("Inscrito ID: {}", num))),
+        Ok(_) => Ok(HttpResponse::NoContent().finish()),
         Err(err) => Err(ErrorBadRequest(format!(
             "Não foi possivel completar a sua requisição\n {}",
             err

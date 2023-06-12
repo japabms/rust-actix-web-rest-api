@@ -37,7 +37,7 @@ async fn get_curso_by_id(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Re
 
 #[utoipa::path(
     tag = "Curso",
-    request_body = CursoDTO,
+    request_body = NewCurso,
     responses (
         (status = 200, description = "Cursos pego com sucesso.",),
         (status = NOT_FOUND)
@@ -53,7 +53,7 @@ async fn post_curso(json: web::Json<NewCurso>, pool: web::Data<DbPool>) -> impl 
 
 #[utoipa::path(
     tag = "Curso",
-    request_body = CursoDTO,
+    request_body = NewCurso,
     responses (
         (status = 200, description = "Cursos pego com sucesso."),
         (status = NOT_FOUND)

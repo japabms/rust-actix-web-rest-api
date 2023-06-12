@@ -59,6 +59,7 @@ use utoipa::OpenApi;
         NewCategoria,
         Artigo,
         ArtigoInput,
+        ArtigoDTO,
         Atividade,
         NewAtividade,
         Evento,
@@ -71,7 +72,7 @@ pub struct ApiDoc;
 
 pub fn update_api_docs() -> Result<(), std::io::Error> {
     let mut openapi_json: File = File::create("openapi.json")?;
-    openapi_json.write_all(ApiDoc::openapi().to_pretty_json().unwrap().as_bytes())?;
+    openapi_json.write_all(ApiDoc::openapi().to_json().unwrap().as_bytes())?;
     Ok(())
 }
 

@@ -32,7 +32,7 @@ pub struct ArtigoInput {
     pub categorias: Vec<i32>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, ToSchema)]
 pub struct ArtigoDTO {
     pub id: i32,
     pub titulo: String,
@@ -47,13 +47,6 @@ impl Artigo {
 
     pub fn find_by_id(i: i32, conn: &mut PgConnection) -> QueryResult<Artigo> {
         artigos.filter(artigos::id.eq(i)).get_result(conn)
-    }
-
-    pub fn find_documento(i: i32, conn: &mut PgConnection) -> QueryResult<Vec<u8>> {
-        artigos
-            .filter(artigos::id.eq(i))
-            .select(artigos::documento)
-            .get_result(conn)
     }
 
     pub fn insert(artigo: ArtigoInput, conn: &mut PgConnection) -> QueryResult<usize> {

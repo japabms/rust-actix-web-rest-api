@@ -8,7 +8,7 @@ use crate::services::evento_service;
 
 #[utoipa::path(
     tag = "Evento",
-    request_body(content = ArtigoComCategorias, description = "Artigo to store the database", content_type = "multipart/form-data"),
+    request_body(content = NewEvento, description = "Artigo to store the database", content_type = "multipart/form-data"),
 )]
 #[post("/evento")]
 async fn post_evento(payload: Multipart, pool: web::Data<DbPool>) -> impl Responder {
@@ -19,7 +19,7 @@ async fn post_evento(payload: Multipart, pool: web::Data<DbPool>) -> impl Respon
 }
 #[utoipa::path(
     tag = "Evento",
-    request_body(content = ArtigoComCategorias, description = "Artigo to store the database", content_type = "multipart/form-data"),
+    request_body(content = NewEvento, description = "Artigo to store the database", content_type = "multipart/form-data"),
 )]
 #[put("/evento/{id}")]
 async fn put_evento(

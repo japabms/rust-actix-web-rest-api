@@ -82,10 +82,11 @@ pub async fn insert(mut payload: Multipart, conn: &mut PgConnection) -> Result<(
 }
 
 pub fn find_artigo_documento(id: i32, conn: &mut PgConnection) -> Result<HttpResponse, Error> {
-    match Artigo::find_documento(id, conn) {
-        Ok(documento) => Ok(HttpResponse::Ok()
+    match Artigo::find_by_id(id, conn) {
+        Ok(artigo) => Ok(HttpResponse::Ok()
             .content_type("application/pdf")
-            .body(documento)),
+            .insert_header(("Content-Disposition", format!("{};{}={}", "attachment", "filename", artigo.titulo)))
+            .body(artigo.documento)),
         Err(err) => Err(ErrorNotFound(err)),
     }
 }
