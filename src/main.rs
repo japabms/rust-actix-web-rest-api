@@ -1,5 +1,5 @@
-pub mod api_docs;
 #[allow(unused_imports, unused_variables)]
+pub mod api_docs;
 pub mod controllers;
 pub mod db;
 pub mod models;
@@ -29,7 +29,9 @@ async fn main() -> std::io::Result<()> {
     //loading api definition
     //this propably dont work on windows.
     let swagger_docs = get_open_api_json_path()?;
-    update_api_docs()?;
+
+    //Uncomment if you wanna make some change in the swagger-ui
+    //update_api_docs()?;
 
     // rodando as migrações
     let mut conn = establish_connection();
