@@ -2,9 +2,8 @@ use std::ops::DerefMut;
 
 use actix_multipart::Multipart;
 use actix_web::{delete, get, post, put, web, HttpResponse, Responder};
-use diesel::IntoSql;
 
-use crate::{db::DbPool, models::artigo::ArtigoInput, services::artigo_service};
+use crate::{db::DbPool, services::artigo_service};
 
 #[utoipa::path(tag = "Artigo", responses(
     (status = 200, body = ArtigoDTO)
