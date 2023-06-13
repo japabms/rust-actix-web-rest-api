@@ -26,7 +26,9 @@ pub struct Evento {
 pub struct NewEvento {
     pub titulo: String,
     pub sobre: String,
+    #[serde(rename = "dataInicio")]
     pub data_inicio: NaiveDate,
+    #[serde(rename = "dataFim")]
     pub data_fim: NaiveDate,
     pub tipo: String,
     pub email: String,

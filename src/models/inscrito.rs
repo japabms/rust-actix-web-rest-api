@@ -26,10 +26,13 @@ pub struct Inscrito {
 #[diesel(table_name = inscrito)]
 pub struct NewInscrito {
     pub nome: String,
+    #[serde(rename = "nomeCracha")]
     pub nome_cracha: String,
     pub email: String,
     pub cpf: String,
+    #[serde(rename = "modalidadeNome")]
     pub modalidade_nome: String,
+    #[serde(rename = "modalidadePreco")]
     pub modalidade_preco: i32,
     pub instituicao: String,
 }
