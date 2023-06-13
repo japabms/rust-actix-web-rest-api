@@ -61,7 +61,7 @@ async fn get_noticia_imagem(id: web::Path<i32>, pool: web::Data<DbPool>) -> impl
 }
 
 #[utoipa::path(tag = "Noticia")]
-#[get("/noticia/recentes")]
+#[get("/noticia/recentes/")]
 async fn get_noticias_recentes(pool: web::Data<DbPool>) -> impl Responder {
     match noticia_service::find_noticia_recente(pool.get().unwrap().deref_mut()) {
         Ok(res) => res,
