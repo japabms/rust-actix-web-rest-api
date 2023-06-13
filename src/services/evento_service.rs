@@ -95,7 +95,7 @@ pub async fn insert(
                         let data = chunk?;
                         date_str.push_str(std::str::from_utf8(&data)?)
                     }
-                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").unwrap();
+                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").map_err(|_| ErrorBadRequest("Erro ao converter data\nO formato esperado é dia-mes-ano"))?;
                     evento.data_inicio = date;
                 }
                 "data_fim" => {
@@ -104,7 +104,7 @@ pub async fn insert(
                         let data = chunk?;
                         date_str.push_str(std::str::from_utf8(&data)?)
                     }
-                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").unwrap();
+                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").map_err(|_| ErrorBadRequest("Erro ao converter data\nO formato esperado é dia-mes-ano"))?;
                     evento.data_fim = date;
                 }
                 "tipo" => {
@@ -148,7 +148,7 @@ pub async fn update(
     let mut evento = NewEvento::default();
     let mut conn_2 = establish_connection();
 
-    let _evento = Evento::find_by_id(id, &mut conn_2).unwrap();
+    let _evento = Evento::find_by_id(id, &mut conn_2).map_err(ErrorNotFound)?;
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let content_disposition = field.content_disposition();
@@ -177,7 +177,7 @@ pub async fn update(
                         let data = chunk?;
                         date_str.push_str(std::str::from_utf8(&data)?)
                     }
-                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").unwrap();
+                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").map_err(|_| ErrorBadRequest("Erro ao converter data\nO formato esperado é dia-mes-ano"))?;
                     evento.data_inicio = date;
                 }
                 "data_fim" => {
@@ -186,7 +186,7 @@ pub async fn update(
                         let data = chunk?;
                         date_str.push_str(std::str::from_utf8(&data)?)
                     }
-                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").unwrap();
+                    let date = NaiveDate::parse_from_str(&date_str, "%d-%m-%Y").map_err(|_| ErrorBadRequest("Erro ao converter data\nO formato esperado é dia-mes-ano"))?;
                     evento.data_fim = date;
                 }
                 "tipo" => {
