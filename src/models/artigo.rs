@@ -27,6 +27,7 @@ pub struct NewArtigo {
 pub struct ArtigoInput {
     pub titulo: String,
     pub resumo: String,
+    #[serde(rename = "palavraChave")]
     pub palavra_chave: String,
     pub documento: Vec<u8>,
     pub categorias: Vec<i32>,
@@ -56,10 +57,6 @@ impl Artigo {
             palavra_chave: artigo.palavra_chave,
             documento: artigo.documento,
         };
-
-        for cat in artigo.categorias.iter() {
-            println!("{:?}", cat);
-        }
 
         let a_id = diesel::insert_into(artigos)
             .values(&inserir_artigo)
