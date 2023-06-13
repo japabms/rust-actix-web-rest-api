@@ -76,7 +76,7 @@ impl Noticia {
     }
 
     pub fn find_noticias_recente(conn: &mut PgConnection) -> QueryResult<Vec<Noticia>> {
-        noticias.order(noticias::data.desc()).limit(5).load(conn)
+        noticias.order(noticias::data.desc()).limit(3).load::<Noticia>(conn)
     }
 
     pub fn delete_noticia(i: i32, conn: &mut PgConnection) -> QueryResult<usize> {
