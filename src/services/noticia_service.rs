@@ -8,7 +8,7 @@ use futures_util::StreamExt as _;
 use futures_util::TryStreamExt as _;
 use std::io::Write;
 
-use crate::{db::establish_connection, models::noticia::*};
+use crate::models::noticia::*;
 use diesel::PgConnection;
 
 pub fn find_all(conn: &mut PgConnection) -> Result<HttpResponse, Error> {
@@ -129,9 +129,8 @@ pub async fn update(
     mut payload: Multipart,
     conn: &mut PgConnection,
 ) -> Result<HttpResponse, Error> {
-    let mut conn_2 = establish_connection();
 
-    let _noticia = match Noticia::find_by_id(id, &mut conn_2) {
+    let _noticia = match Noticia::find_by_id(id, conn) {
         Ok(noticia) => noticia,
         Err(err) => return Err(ErrorNotFound(err)),
     };
